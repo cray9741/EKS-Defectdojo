@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-  - host: "abc.com"
+  - host: "defectdojo.secops-ba.win"
     http:
       paths:
       - path: /

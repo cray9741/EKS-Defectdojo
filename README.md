@@ -52,13 +52,35 @@ terraform apply -var-file="../tfvars/nonprod/nonprod.tfvars" -auto-approve
 ## Access EKS Cluster
 ```sh
 # Update your kubeconfig to access the EKS cluster
-aws eks update-kubeconfig --region us-east-2 --name legion-nonprod
+aws eks update-kubeconfig --region us-east-1 --name legion-nonprod
 
 # Check active pods
 kubectl get po -A
 ```
+
+## Apply Secrets
+```sh
+# Navigate to secrets folder
+cd ../secrets
+# Create Secrets
+kubectl apply -f cert-manager-webhook-ca.yaml
+kubectl apply -f defectdojo-tls.yaml
+kubectl apply -f mutatingwebhook.yaml
+kubectl apply -f validatingwebhook.yaml
+```
+
+### Restart Pods
+```sh
+kubectl rollout restart deployment cert-manager-webhook -n cert-manager
+kubectl rollout restart deployment cert-manager -n cert-manager
+kubectl rollout restart deployment cert-manager-cainjector -n cert-manager
+kubectl rollout restart deployment traefik -n traefik
+kubectl rollout restart deployment defectdojo -n defectdojo
+```
+
 ## Destroy Infrastructure
 ```sh
 # Destroy all resources created by Terraform
 terraform destroy -var-file="../tfvars/nonprod/nonprod.tfvars" -auto-approve
 ```
+
