@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-webapp
+  annotations:
+    kubernetes.io/ingress.class: traefik
+  labels:
+    app: my-webapp
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: "abc.com"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name:  my-webapp-service
+            port:
+              number: 80
