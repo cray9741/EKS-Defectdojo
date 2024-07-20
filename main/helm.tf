@@ -18,25 +18,6 @@
 #   depends_on                       = [module.eks]
 # }
 
-
-resource "helm_release" "trivy" {
-  create_namespace = true
-  namespace  = "trivy"
-  name       = "trivy"
-  chart      = "trivy"
- # version    = "3.12.0"
-  repository = "https://aquasecurity.github.io/helm-charts/"
-  depends_on = [module.eks]
-    set {
-    name  = "ingress.enabled"
-    value = "true"
-  }
-    set {
-    name  = "persistence.enabled"
-    value = "false"
-  }  
-}
-
 resource "helm_release" "traefik" {
   create_namespace = true
   namespace  = "traefik"
@@ -64,27 +45,6 @@ resource "helm_release" "traefik" {
     "${file("../helm_charts/defectdojo/values.yaml")}" ]
 }
 
-resource "helm_release" "prowler" {
-  namespace  = "prowler-ns"
-  create_namespace = true
-  name       = "prowler"
-  chart      = "../helm_charts/prowler"
-  version    = "1.1.0"
-  depends_on = [module.eks]
-  values = [
-    "${file("../helm_charts/prowler/values.yaml")}" ]
- }
-
- resource "helm_release" "checkov" {
-  namespace  = "checkov"
-  create_namespace = true
-  name       = "checkov"
-  chart      = "../helm_charts/checkov"
-#  version    = "1.15.0"
-  depends_on = [module.eks]
-  values = [
-    "${file("../helm_charts/checkov/values.yaml")}" ]
- }
 
  resource "helm_release" "cert-manager" {
   create_namespace = true
