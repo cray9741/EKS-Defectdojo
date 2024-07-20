@@ -47,7 +47,7 @@ terraform init
 terraform plan -var-file="../tfvars/nonprod/nonprod.tfvars"
 
 # Apply Terraform Deployment
-terraform apply -var-file="../tfvars/nonprod/nonprod.tfvars"
+terraform apply -var-file="../tfvars/nonprod/nonprod.tfvars" -auto-approve
 ```
 ## Access EKS Cluster
 ```sh
@@ -60,5 +60,5 @@ kubectl get po -A
 ## Destroy Infrastructure
 ```sh
 # Destroy all resources created by Terraform
-terraform destroy -var-file="../tfvars/nonprod/nonprod.tfvars"
+terraform destroy -var-file="../tfvars/nonprod/nonprod.tfvars" -auto-approve
 ```

@@ -1,24 +1,44 @@
 resource "kubectl_manifest" "ClusterIssuer" {
-    depends_on = [helm_release.cert-manager]
-    yaml_body = <<YAML
+  depends_on = [helm_release.cert-manager]
+  yaml_body = <<YAML
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: cloudflareissuer
-  namespace: cert-manager
+  name: letsencrypt-staging
 spec:
   acme:
-    email: vkhachatryan339@gmail.com
+    email: chjackson3rd@gmail.com
     server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
-      name: cluster-issuer-account-key
+      name: letsencrypt-prod
     solvers:
     - dns01:
         cloudflare:
-          email: vkhachatryan339@gmail.com
-          apiTokenSecretRef:
-            name: cloudflare-api-token
-            key: api-token
+          email: chjackson3rd@gmail.com
+          apiKeySecretRef:
+            name: cloudflare-api-key
+            key: apikey
+      selector:
+        dnsZones:
+        - 'secops-ba.win'
 YAML
 }
-         
+
+resource "kubectl_manifest" "Certificate" {
+  depends_on = [kubectl_manifest.ClusterIssuer]
+  yaml_body = <<YAML
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: defectdojo-tls
+  namespace: defectdojo
+spec:
+  secretName: defectdojo-tls
+  issuerRef:
+    name: cloudflareissuer
+    kind: ClusterIssuer
+  commonName: defectdojo.secops-ba.win
+  dnsNames:
+  - defectdojo.secops-ba.win
+YAML
+}

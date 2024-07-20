@@ -1,12 +1,12 @@
-#AWS variables
-region                = "us-east-2"
+# AWS variables
+region                = "us-east-1"
 env                   = "nonprod"
 
 #================= VPC =======================#
 vpc_name        = "legion-nonprod"
 vpc_version     = "5.5.2"
 vpc_cidr        = "10.234.0.0/16"
-az_list         = ["us-east-2a","us-east-2b","us-east-2c"]
+az_list         = ["us-east-1a","us-east-1b","us-east-1c"]
 db_subnets      = ["10.234.48.0/21", "10.234.56.0/21", "10.234.64.0/21"]
 private_subnets = ["10.234.24.0/21", "10.234.32.0/21", "10.234.40.0/21"]
 public_subnets  = ["10.234.0.0/21", "10.234.8.0/21", "10.234.16.0/21"]
@@ -32,7 +32,7 @@ eks_map_roles        = [
      groups = ["system:masters"]
   }
   ]
-sc_list  = ["2a", "2b", "2c"]
+sc_list  = ["1a", "1b", "1c"]
 
 #================= WAF =======================#
 allowed_cidr_blocks = [
@@ -63,4 +63,3 @@ db_deletion_protection = false
 db_performance_insights_enabled = false
 db_apply_immediately = true
 db_multi_az = false
-

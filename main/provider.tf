@@ -24,7 +24,8 @@ terraform {
 
 
 
-# Configure the AWS Provider
+/*
+Configure the AWS Provider
 provider "aws" {
   region = "us-east-2"
   default_tags {
@@ -35,11 +36,11 @@ provider "aws" {
     }
   }
 }
+*/
 
 # Configure the AWS Provider
 provider "aws" {
   region = "us-east-1"
-  alias  = "east1"
   default_tags {
     tags = {
       Project     = "Devops Legion"
