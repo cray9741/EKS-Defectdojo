@@ -25,7 +25,7 @@ helm repo add defectdojo https://raw.githubusercontent.com/DefectDojo/django-Def
 ```
 
 ## Terraform Setup
-
+```sh
 # Navigate to the ./main directory
 cd main
 
@@ -48,16 +48,17 @@ terraform plan -var-file="../tfvars/nonprod/nonprod.tfvars"
 
 # Apply Terraform Deployment
 terraform apply -var-file="../tfvars/nonprod/nonprod.tfvars"
-
+```
 ## Access EKS Cluster
-
+```sh
 # Update your kubeconfig to access the EKS cluster
 aws eks update-kubeconfig --region us-east-2 --name legion-nonprod
 
 # Check active pods
 kubectl get po -A
-
+```
 ## Destroy Infrastructure
-
+```sh
 # Destroy all resources created by Terraform
 terraform destroy -var-file="../tfvars/nonprod/nonprod.tfvars"
+```
