@@ -62,6 +62,7 @@ kubectl get po -A
 ```sh
 # Navigate to secrets folder
 cd ../secrets
+
 # Create Secrets
 kubectl apply -f cert-manager-webhook-ca.yaml
 kubectl apply -f defectdojo-tls.yaml
@@ -75,7 +76,9 @@ kubectl rollout restart deployment cert-manager-webhook -n cert-manager
 kubectl rollout restart deployment cert-manager -n cert-manager
 kubectl rollout restart deployment cert-manager-cainjector -n cert-manager
 kubectl rollout restart deployment traefik -n traefik
-kubectl rollout restart deployment defectdojo -n defectdojo
+
+
+kubectl rollout restart deployment defectdojo-django -n defectdojo
 ```
 
 ## Destroy Infrastructure
