@@ -39,10 +39,10 @@ cluster_endpoint_public_access_cidrs = [
   "141.136.91.0/32"
 ]
 
-#================= WAF =======================#
-# allowed_cidr_blocks = [
-#   "141.136.89.3/32"
-# ]
+================= WAF =======================#
+allowed_cidr_blocks = [
+  "141.136.89.3/32"
+]
 
 #================= AWS KMS =======================#
 kms_deletion_window_in_days = "7"
