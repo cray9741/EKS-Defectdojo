@@ -12,12 +12,12 @@
 #   }
 # }
 
-# resource "kubernetes_namespace" "defectdojo" {
-#   count   = var.env == "nonprod" ? 1 : 0
-#   metadata {
-#     name = "defectdojo"
-#   }
-# }
+resource "kubernetes_namespace" "defectdojo" {
+  count   = var.env == "nonprod" ? 1 : 0
+  metadata {
+    name = "defectdojo"
+  }
+}
 
 # resource "kubernetes_namespace" "checkov" {
 #   count   = var.env == "nonprod" ? 1 : 0
@@ -26,12 +26,12 @@
 #   }
 # }
 
-# resource "kubernetes_namespace" "cert-manager" {
-#   count   = var.env == "nonprod" ? 1 : 0
-#   metadata {
-#     name = "cert-manager"
-#   }
-# }
+resource "kubernetes_namespace" "cert-manager" {
+  count   = var.env == "nonprod" ? 1 : 0
+  metadata {
+    name = "cert-manager"
+  }
+}
 
 
 

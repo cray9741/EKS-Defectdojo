@@ -117,14 +117,14 @@ metadata:
     cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
     meta.helm.sh/release-name: cert-manager
     meta.helm.sh/release-namespace: cert-manager
-  name: cert-manager-webhook
+  name: cert-manager-webhook-mutating
 webhooks:
 - admissionReviewVersions:
   - v1
   clientConfig:
     caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ3VENDQVVlZ0F3SUJBZ0lRVk5uSTNCaS83WVVxRHhJS0wrUlB5akFLQmdncWhrak9QUVFEQXpBaU1TQXcKSGdZRFZRUURFeGRqWlhKMExXMWhibUZuWlhJdGQyVmlhRzl2YXkxallUQWVGdzB5TkRBM01qQXdOalV3TlRaYQpGdzB5TlRBM01qQXdOalV3TlRaYU1DSXhJREFlQmdOVkJBTVRGMk5sY25RdGJXRnVZV2RsY2kxM1pXSm9iMjlyCkxXTmhNSFl3RUFZSEtvWkl6ajBDQVFZRks0RUVBQ0lEWWdBRWUwdmNHajNhZDUwYm9UMjlSb0x1eUdFeko5OUIKT3l2SzRMdmQ1eG4yT3ZtdzVXcjhwalgzcnNXcWFNN3NNdWhZUUdicndxTDlLaTB5SE1HT3N0V3hRUGJFSTMrQwpiRkpvbytBNnpNUHg1akhXa3EreDE0OHg1RVpFVEVBbDk0WUlvMEl3UURBT0JnTlZIUThCQWY4RUJBTUNBcVF3CkR3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVUd0YWE1cHkwREozc1VTT1p1cUxqODYwRGxPOHcKQ2dZSUtvWkl6ajBFQXdNRGFBQXdaUUl4QU80Z0NXZXFSZmpNOGFTRGYzOFM1SDZYYnVSaEJoQ1N1TkdxaWlXcApzUlRtaFlmR1duc1U5TmlMazI5bUtZZ1krd0l3SGduR3l5QmhRN08vTzVvdTk4S2xDdUZQR0FlOTVtUEdsOVgwCi80cXdINUhUOXRuMS9Ud3JIQ2VnY2N1RXdlbGYKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
     service:
-      name: cert-manager-webhook
+      name: cert-manager-webhook-mutating
       namespace: cert-manager
       path: /mutate
       port: 443
@@ -152,7 +152,7 @@ YAML
 }
 
 
-resource "kubectl_manifest" "cert-manager-webhook" {
+resource "kubectl_manifest" "cert-manager-webhook-validating" {
   yaml_body = <<YAML
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
@@ -161,14 +161,14 @@ metadata:
     cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
     meta.helm.sh/release-name: cert-manager
     meta.helm.sh/release-namespace: cert-manager
-  name: cert-manager-webhook
+  name: cert-manager-webhook-validating
 webhooks:
 - admissionReviewVersions:
   - v1
   clientConfig:
     caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ3VENDQVVlZ0F3SUJBZ0lRVk5uSTNCaS83WVVxRHhJS0wrUlB5akFLQmdncWhrak9QUVFEQXpBaU1TQXcKSGdZRFZRUURFeGRqWlhKMExXMWhibUZuWlhJdGQyVmlhRzl2YXkxallUQWVGdzB5TkRBM01qQXdOalV3TlRaYQpGdzB5TlRBM01qQXdOalV3TlRaYU1DSXhJREFlQmdOVkJBTVRGMk5sY25RdGJXRnVZV2RsY2kxM1pXSm9iMjlyCkxXTmhNSFl3RUFZSEtvWkl6ajBDQVFZRks0RUVBQ0lEWWdBRWUwdmNHajNhZDUwYm9UMjlSb0x1eUdFeko5OUIKT3l2SzRMdmQ1eG4yT3ZtdzVXcjhwalgzcnNXcWFNN3NNdWhZUUdicndxTDlLaTB5SE1HT3N0V3hRUGJFSTMrQwpiRkpvbytBNnpNUHg1akhXa3EreDE0OHg1RVpFVEVBbDk0WUlvMEl3UURBT0JnTlZIUThCQWY4RUJBTUNBcVF3CkR3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVUd0YWE1cHkwREozc1VTT1p1cUxqODYwRGxPOHcKQ2dZSUtvWkl6ajBFQXdNRGFBQXdaUUl4QU80Z0NXZXFSZmpNOGFTRGYzOFM1SDZYYnVSaEJoQ1N1TkdxaWlXcApzUlRtaFlmR1duc1U5TmlMazI5bUtZZ1krd0l3SGduR3l5QmhRN08vTzVvdTk4S2xDdUZQR0FlOTVtUEdsOVgwCi80cXdINUhUOXRuMS9Ud3JIQ2VnY2N1RXdlbGYKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
     service:
-      name: cert-manager-webhook
+      name: cert-manager-webhook-validating
       namespace: cert-manager
       path: /validate
       port: 443
@@ -201,7 +201,94 @@ YAML
 
 }
 
+resource "kubectl_manifest" "TLSOption" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: TLSOption
+metadata:
+  name: default
+  namespace: traefik
+spec:
+  minVersion: VersionTLS12
 
+YAML
+
+
+}
+
+resource "kubectl_manifest" "Middleware" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: secure-headers
+  namespace: defectdojo
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-For: "{clientIP}"
+      X-Forwarded-Proto: "https"
+    stsSeconds: 31536000
+    stsIncludeSubdomains: true
+    stsPreload: true
+YAML
+
+
+}
+
+resource "kubectl_manifest" "IngressRouteSecure" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: defectdojo-app-secure
+  namespace: defectdojo
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`defectdojo.secops-ba.win`)
+      kind: Rule
+      middlewares:
+        - name: secure-headers
+          namespace: defectdojo
+      services:
+        - name: defectdojo-django
+          namespace: defectdojo
+          port: http
+  tls:
+    secretName: defectdojo-tls
+YAML
+
+
+}
+
+resource "kubectl_manifest" "IngressRoute" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: defectdojo-app
+  namespace: defectdojo
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`defectdojo.secops-ba.win`)
+      kind: Rule
+      middlewares:
+        - name: https-redirect
+          namespace: defectdojo
+        - name: secure-headers
+          namespace: defectdojo
+      services:
+        - name: defectdojo-django
+          namespace: defectdojo
+          port: http
+YAML
+
+
+}
 
 
 
