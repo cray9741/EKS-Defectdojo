@@ -313,7 +313,7 @@ resource "aws_iam_user" "eksuser" {
 
 resource "aws_iam_user_policy_attachment" "attach_EKS_Access_policy" {
   user       = aws_iam_user.eksuser.name
-  policy_arn = "arn:aws:iam::aws:policy/EKS-Access"  
+  policy_arn = aws_iam_policy.EKS-Access.arn 
 }
 
 
@@ -325,20 +325,20 @@ resource "aws_iam_role" "eks-role" {
   assume_role_policy = data.aws_iam_policy_document.eks-policy-assume-role.json
 }
 
-resource "aws_iam_role_policy_attachment" "attach_ssm-access_policy" {
-  role       = aws_iam_role.eks-role.name
-  policy_arn = "arn:aws:iam::aws:policy/ssm-access"
-}
+# resource "aws_iam_role_policy_attachment" "attach_ssm-access_policy" {
+#   role       = aws_iam_role.eks-role.name
+#   policy_arn = "arn:aws:iam::aws:policy/ssm-access"
+# }
 
-resource "aws_iam_role_policy_attachment" "attach_add_to_bucket_policy" {
-  role       = aws_iam_role.eks-role.name
-  policy_arn = "arn:aws:iam::aws:policy/add_to_bucket"
-}
+# resource "aws_iam_role_policy_attachment" "attach_add_to_bucket_policy" {
+#   role       = aws_iam_role.eks-role.name
+#   policy_arn = "arn:aws:iam::aws:policy/add_to_bucket"
+# }
 
-resource "aws_iam_role_policy_attachment" "attach_secret_policy" {
-  role       = aws_iam_role.eks-role.name
-  policy_arn = "arn:aws:iam::aws:policy/secret"
-}
+# resource "aws_iam_role_policy_attachment" "attach_secret_policy" {
+#   role       = aws_iam_role.eks-role.name
+#   policy_arn = "arn:aws:iam::aws:policy/secret"
+# }
 
 resource "aws_iam_role_policy_attachment" "attach_ViewOnlyAccess_policy" {
   role       = aws_iam_role.eks-role.name
