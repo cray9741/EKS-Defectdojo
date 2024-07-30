@@ -34,10 +34,15 @@ eks_map_roles        = [
   ]
 sc_list  = ["1a", "1b", "1c"]
 
-#================= WAF =======================#
-allowed_cidr_blocks = [
-  "141.136.89.3/32"
+
+cluster_endpoint_public_access_cidrs = [
+  "141.136.91.0/32"
 ]
+
+#================= WAF =======================#
+# allowed_cidr_blocks = [
+#   "141.136.89.3/32"
+# ]
 
 #================= AWS KMS =======================#
 kms_deletion_window_in_days = "7"
