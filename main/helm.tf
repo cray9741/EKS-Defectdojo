@@ -40,7 +40,7 @@ resource "helm_release" "traefik" {
   wait = false
  # version    = "3.12.0"
   repository = "https://raw.githubusercontent.com/DefectDojo/django-DefectDojo/helm-charts"
-  depends_on = [module.eks]
+  depends_on = [ "module.eks", "kubectl_manifest.cert-manager-webhook-ca", "kubectl_manifest.defectdojo-tls", "kubectl_manifest.cert-manager-webhook", "kubectl_manifest.cert-manager-webhook-mutating"]
   values = [
     "${file("../helm_charts/defectdojo/values.yaml")}" ]
 }
