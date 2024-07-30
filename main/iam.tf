@@ -45,6 +45,154 @@ data "aws_iam_policy_document" "access_eks_kms_policy" {
   }
 }
 
+
+# resource "aws_iam_policy" "ssm-access" {
+#   name        = "ssm-access"
+#   policy      = jsonencode({
+#     "Version": "2012-10-17",
+#     "Statement": [
+#         {
+#             "Effect": "Allow",
+#             "Action": "ssm:GetParameter",
+#             "Resource": [
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/GITHUB_API_KEY",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/DOJO_URL",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/DOJO_API_KEY",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/JIRA_API_KEY",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/JIRA_URL",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/JIRA_USER"
+#             ]
+#         }
+#     ]
+# })
+# }
+
+
+resource "aws_iam_policy" "EKS-Access" {
+  name        = "EKS-Access"
+  policy      = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "eks:*",
+            "Resource": "*"
+        }
+    ]
+})
+}
+
+
+# resource "aws_iam_policy" "add_to_bucket" {
+#   name        = "add_to_bucket"
+#   policy      = jsonencode({
+#     "Version": "2012-10-17",
+#     "Statement": [
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "s3:PutObject",
+#                 "s3:GetObject",
+#                 "s3:DeleteObject"
+#             ],
+#             "Resource": [
+#                 "arn:aws:s3:::sec-tooling-backend-tools-results-87238225/*",
+#                 "arn:aws:s3:::sec-tooling-backend-tools-results-87238225",
+#                 "arn:aws:s3:::the-oidc-bucket-3092812",
+#                 "arn:aws:s3:::the-oidc-bucket-3092812/*"
+#             ]
+#         },
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "s3:ListBucket*"
+#             ],
+#             "Resource": [
+#                 "*"
+#             ]
+#         }
+#     ]
+# })
+# }
+
+
+# resource "aws_iam_policy" "secret_policy" {
+#   name        = "secret_policy"
+#   policy      = jsonencode({
+#     "Version": "2012-10-17",
+#     "Statement": [
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "ssm:GetParameter",
+#                 "ssm:*"
+#             ],
+#             "Resource": [
+#                 "arn:aws:ssm:us-west-2:623045223656:parameter/secret8",
+#                 "arn:aws:ssm:us-west-2:623045223656:parameter/secret1",
+#                 "arn:aws:ssm:us-west-2:623045223656:parameter/secret2",
+#                 "arn:aws:ssm:us-west-2:623045223656:parameter/secret3",
+#                 "arn:aws:ssm:us-west-2:623045223656:parameter/secret4",
+#                 "arn:aws:ssm:us-west-2:623045223656:parameter/secret5"
+#             ]
+#         },
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "ssm:DescribeParameters"
+#             ],
+#             "Resource": [
+#                 "*"
+#             ]
+#         },
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "kms:Decrypt"
+#             ],
+#             "Resource": "arn:aws:kms:us-west-2:623045223656:key/aws/ssm"
+#         },
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "ssm:GetParameter",
+#                 "ssm:*"
+#             ],
+#             "Resource": [
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/MY_JIRA_API",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/MY_JIRA_URL",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/MY_JIRA_USERNAME",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/JIRA_API_KEY",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/JIRA_URL",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/JIRA_USER",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/DOJO_URL",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/DOJO_API_KEY*",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/secret2",
+#                 "arn:aws:ssm:us-east-1:623045223656:parameter/secret3"
+#             ]
+#         },
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "ssm:DescribeParameters"
+#             ],
+#             "Resource": [
+#                 "*"
+#             ]
+#         },
+#         {
+#             "Effect": "Allow",
+#             "Action": [
+#                 "kms:Decrypt"
+#             ],
+#             "Resource": "arn:aws:kms:us-east-1:623045223656:key/aws/ssm"
+#         }
+#     ]
+# })
+# }
+
+
 resource "aws_iam_policy" "access_eks_kms_access" {
   name        = "${var.env}-eks-kms-access"
   path        = "/"
@@ -194,5 +342,5 @@ resource "aws_iam_role_policy_attachment" "attach_secret_policy" {
 
 resource "aws_iam_role_policy_attachment" "attach_ViewOnlyAccess_policy" {
   role       = aws_iam_role.eks-role.name
-  policy_arn = "arn:aws:iam::aws:policy/ViewOnlyAccess"
+  policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
 }
