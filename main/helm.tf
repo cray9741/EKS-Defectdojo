@@ -25,6 +25,7 @@ resource "helm_release" "traefik" {
   chart      = "traefik"
   version    = "28.2.0"
   repository = "https://helm.traefik.io/traefik"
+  #depends_on = ["module.eks", "kubectl_manifest.IngressRoute", "kubectl_manifest.IngressRouteSecure", "kubectl_manifest.Middleware", "kubectl_manifest.TLSOption"]
   depends_on = [module.eks]
   set {
     name  = "additionalArguments"
@@ -54,7 +55,7 @@ resource "helm_release" "traefik" {
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
   version    = "1.15.0"
-  depends_on = ["kubernetes_namespace.cert-manager", "module.eks", "kubectl_manifest.IngressRoute", "kubectl_manifest.IngressRouteSecure", "kubectl_manifest.Middleware", "kubectl_manifest.TLSOption"]
+  depends_on = ["kubernetes_namespace.cert-manager", "module.eks"]
     set {
     name  = "crds.enabled"
     value = "true"

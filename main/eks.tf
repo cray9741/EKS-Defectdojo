@@ -213,7 +213,7 @@ spec:
 
 YAML
 
-
+  depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "Middleware" {
@@ -233,7 +233,7 @@ spec:
     stsPreload: true
 YAML
 
-
+  depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "IngressRouteSecure" {
@@ -260,7 +260,7 @@ spec:
     secretName: defectdojo-tls
 YAML
 
-
+  depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "IngressRoute" {
@@ -287,7 +287,7 @@ spec:
           port: http
 YAML
 
-
+  depends_on = [helm_release.traefik]
 }
 
 
