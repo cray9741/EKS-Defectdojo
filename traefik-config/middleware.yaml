@@ -1,13 +1,9 @@
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: secure-headers
+  name: https-redirect
   namespace: defectdojo
 spec:
-  headers:
-    customRequestHeaders:
-      X-Forwarded-For: "{clientIP}"
-      X-Forwarded-Proto: "https"
-    stsSeconds: 31536000
-    stsIncludeSubdomains: true
-    stsPreload: true
+  redirectScheme:
+    scheme: https
+    permanent: true

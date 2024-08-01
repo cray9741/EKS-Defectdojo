@@ -25,7 +25,8 @@ resource "helm_release" "traefik" {
   chart      = "traefik"
   version    = "28.2.0"
   repository = "https://helm.traefik.io/traefik"
-  depends_on = [module.eks]
+  depends_on = ["module.eks", "kubectl_manifest.IngressRoute", "kubectl_manifest.IngressRouteSecure", "kubectl_manifest.Middleware", "kubectl_manifest.TLSOption"]
+  #depends_on = [module.eks]
   set {
     name  = "additionalArguments"
     value = "{--providers.kubernetesingress.ingressendpoint.publishedservice=traefik/traefik}"
@@ -40,7 +41,7 @@ resource "helm_release" "traefik" {
   wait = false
  # version    = "3.12.0"
   repository = "https://raw.githubusercontent.com/DefectDojo/django-DefectDojo/helm-charts"
-  depends_on = [module.eks]
+  depends_on = ["kubernetes_namespace.defectdojo", "module.eks", "kubectl_manifest.cert-manager-webhook-ca", "kubectl_manifest.defectdojo-tls", "kubectl_manifest.cert-manager-webhook-validating", "kubectl_manifest.cert-manager-webhook-mutating"]
   values = [
     "${file("../helm_charts/defectdojo/values.yaml")}" ]
 }
@@ -54,7 +55,7 @@ resource "helm_release" "traefik" {
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
   version    = "1.15.0"
-  depends_on = [module.eks]
+  depends_on = ["kubernetes_namespace.cert-manager", "module.eks"]
     set {
     name  = "crds.enabled"
     value = "true"
