@@ -27,7 +27,7 @@ eks_cluster_des_size      = "3"
 eks_max_unavailable_percentage = "50"
 eks_map_roles        = [
     {
-     rolearn  = "arn:aws:iam::992382399597:role/eks-manage-role-nonprod"
+     rolearn  = "arn:aws:iam::038810797634:role/eks-manage-role-nonprod"
      username = "eks-manage-role-nonprod"
      groups = ["system:masters"]
   }
@@ -39,9 +39,9 @@ cluster_endpoint_public_access_cidrs = [
   "141.136.91.0/32"
 ]
 
-================= WAF =======================#
+#================= WAF =======================#
 allowed_cidr_blocks = [
-  "141.136.89.3/32"
+  "100.36.68.167/32"
 ]
 
 #================= AWS KMS =======================#

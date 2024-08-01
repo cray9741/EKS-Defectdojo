@@ -151,6 +151,19 @@ YAML
 
 }
 
+resource "kubectl_manifest" "docker_registry_secret" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: Secret
+metadata:
+  name: defectdojoregistrykey
+  namespace: default
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJ0cmF5M3JkIiwicGFzc3dvcmQiOiJ+MTQxTzkwbGQ5NzQxTm9ydGhlcm4iLCJhdXRoIjoiWVdSb2JHRnRjeTVwYldGeVlXNXplU0J3WlhKaGRHOXlZWFJwYjI0PT0ifX19
+YAML
+}
+
 
 resource "kubectl_manifest" "cert-manager-webhook-validating" {
   yaml_body = <<YAML
@@ -212,8 +225,6 @@ spec:
   minVersion: VersionTLS12
 
 YAML
-
-  depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "Middleware" {
@@ -221,19 +232,13 @@ resource "kubectl_manifest" "Middleware" {
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: secure-headers
+  name: https-redirect
   namespace: defectdojo
 spec:
-  headers:
-    customRequestHeaders:
-      X-Forwarded-For: "{clientIP}"
-      X-Forwarded-Proto: "https"
-    stsSeconds: 31536000
-    stsIncludeSubdomains: true
-    stsPreload: true
+  redirectScheme:
+    scheme: https
+    permanent: true
 YAML
-
-  depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "IngressRouteSecure" {
@@ -259,8 +264,6 @@ spec:
   tls:
     secretName: defectdojo-tls
 YAML
-
-  depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "IngressRoute" {
@@ -286,8 +289,6 @@ spec:
           namespace: defectdojo
           port: http
 YAML
-
-  depends_on = [helm_release.traefik]
 }
 
 
