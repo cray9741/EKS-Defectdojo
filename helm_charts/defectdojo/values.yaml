@@ -196,7 +196,7 @@ django:
     activateTLS: true
     secretName: defectdojo-tls
     annotations:
-      traefik.ingress.kubernetes.io/whitelist-source-range: “100.36.68.167/32”
+      traefik.ingress.kubernetes.io/whitelist-source-range: "100.36.68.167/32"
       cert-manager.io/cluster-issuer: cloudflare-issuer
       # Restricts the type of ingress controller that can interact with our chart (nginx, traefik, ...)
       # kubernetes.io/ingress.class: nginx

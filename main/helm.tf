@@ -25,8 +25,8 @@ resource "helm_release" "traefik" {
   chart      = "traefik"
   version    = "28.2.0"
   repository = "https://helm.traefik.io/traefik"
-  depends_on = ["module.eks", "kubectl_manifest.IngressRoute", "kubectl_manifest.IngressRouteSecure", "kubectl_manifest.Middleware", "kubectl_manifest.TLSOption"]
-  #depends_on = [module.eks]
+  #depends_on = ["module.eks", "kubectl_manifest.IngressRoute", "kubectl_manifest.IngressRouteSecure", "kubectl_manifest.Middleware", "kubectl_manifest.TLSOption"]
+  depends_on = [module.eks]
   set {
     name  = "additionalArguments"
     value = "{--providers.kubernetesingress.ingressendpoint.publishedservice=traefik/traefik}"

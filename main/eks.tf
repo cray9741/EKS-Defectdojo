@@ -211,7 +211,7 @@ webhooks:
   timeoutSeconds: 30
 YAML
 
-
+depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "TLSOption" {
@@ -225,6 +225,8 @@ spec:
   minVersion: VersionTLS12
 
 YAML
+
+depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "Middleware" {
@@ -239,6 +241,8 @@ spec:
     scheme: https
     permanent: true
 YAML
+
+depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "IngressRouteSecure" {
@@ -264,6 +268,8 @@ spec:
   tls:
     secretName: defectdojo-tls
 YAML
+
+depends_on = [helm_release.traefik]
 }
 
 resource "kubectl_manifest" "IngressRoute" {
@@ -289,9 +295,65 @@ spec:
           namespace: defectdojo
           port: http
 YAML
+
+depends_on = [helm_release.traefik]
 }
 
 
+
+resource "kubectl_manifest" "secure_headers" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: secure-headers
+  namespace: defectdojo
+spec:
+  headers:
+    customRequestHeaders:
+      X-Forwarded-For: "{clientIP}"
+      X-Forwarded-Proto: "https"
+    stsSeconds: 31536000
+    stsIncludeSubdomains: true
+    stsPreload: true
+YAML
+
+depends_on = [helm_release.traefik]
+}
+
+resource "kubectl_manifest" "test_ipallowlist" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: MiddlewareTCP
+metadata:
+  name: test-ipallowlist
+  namespace: default
+spec:
+  ipAllowList:
+    sourceRange:
+      - 127.0.0.1/32
+      - 100.36.68.167/32
+YAML
+
+depends_on = [helm_release.traefik]
+}
+
+resource "kubectl_manifest" "test_ipallowlist2" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: test-ipallowlist
+  namespace: default
+spec:
+  ipAllowList:
+    sourceRange:
+      - 127.0.0.1/32
+      - 100.36.68.167/32
+YAML
+
+depends_on = [helm_release.traefik]
+}
 
 
 
