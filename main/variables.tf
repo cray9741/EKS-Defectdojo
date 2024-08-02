@@ -120,6 +120,14 @@ variable "eks_map_roles" {
   }))
 }
 
+variable "eks_map_users" {
+  description = "Additional IAM users to add to `config-map-aws-auth` ConfigMap"
+  type = list(object({
+    userarn  = string
+    username = string
+    groups   = list(string)
+  }))
+}
 
 variable "sc_list" {
   type        = list(string)

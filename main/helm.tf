@@ -33,19 +33,27 @@ resource "helm_release" "traefik" {
   }
  }
 
- resource "helm_release" "defectdojo" {
+resource "helm_release" "defectdojo" {
   create_namespace = true
   namespace  = "defectdojo"
   name       = "defectdojo"
   chart      = "defectdojo"
   wait = false
- # version    = "3.12.0"
+  # version    = "3.12.0"
   repository = "https://raw.githubusercontent.com/DefectDojo/django-DefectDojo/helm-charts"
-  depends_on = ["kubernetes_namespace.defectdojo", "module.eks", "kubectl_manifest.cert-manager-webhook-ca", "kubectl_manifest.defectdojo-tls", "kubectl_manifest.cert-manager-webhook-validating", "kubectl_manifest.cert-manager-webhook-mutating"]
+  depends_on = [
+    "kubernetes_namespace.defectdojo", 
+    "module.eks", 
+    "kubectl_manifest.cert-manager-webhook-ca", 
+    "kubectl_manifest.defectdojo-tls", 
+    "kubectl_manifest.cert-manager-webhook-validating", 
+    "kubectl_manifest.cert-manager-webhook-mutating", 
+    "kubectl_manifest.defectdojoregistrykey"
+  ]
   values = [
-    "${file("../helm_charts/defectdojo/values.yaml")}" ]
+    "${file("../helm_charts/defectdojo/values.yaml")}"
+  ]
 }
-
 
  resource "helm_release" "cert-manager" {
   create_namespace = true

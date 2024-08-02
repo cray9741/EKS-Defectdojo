@@ -37,6 +37,7 @@ provider "helm" {
 ### kubernetes manifest's
 ###
 
+
 resource "kubectl_manifest" "defectdojo-tls" {
   yaml_body = <<YAML
 apiVersion: v1
@@ -85,6 +86,7 @@ YAML
 
 
 }
+
 
 resource "kubectl_manifest" "cert-manager-webhook-ca" {
   yaml_body = <<YAML
@@ -151,16 +153,64 @@ YAML
 
 }
 
-resource "kubectl_manifest" "docker_registry_secret" {
+resource "kubectl_manifest" "scan-account" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: scan-account
+  namespace: default
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::038810797634:role/eks-manage-role-nonprod
+YAML
+
+}
+
+resource "kubectl_manifest" "job-manager" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: job-manager
+rules:
+- apiGroups: ["batch"]
+  resources: ["jobs", "jobs/status"]
+  verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
+YAML
+
+}
+
+resource "kubectl_manifest" "job-manager-binding" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: job-manager-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: scan-account
+  namespace: default
+roleRef:
+  kind: Role
+  name: job-manager
+  apiGroup: rbac.authorization.k8s.io
+YAML
+
+  depends_on = ["kubectl_manifest.scan-account", "kubectl_manifest.job-manager"]
+}
+
+resource "kubectl_manifest" "defectdojoregistrykey" {
   yaml_body = <<YAML
 apiVersion: v1
 kind: Secret
 metadata:
   name: defectdojoregistrykey
-  namespace: default
+  namespace: defectdojo
 type: kubernetes.io/dockerconfigjson
 data:
-  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJ0cmF5M3JkIiwicGFzc3dvcmQiOiJ+MTQxTzkwbGQ5NzQxTm9ydGhlcm4iLCJhdXRoIjoiWVdSb2JHRnRjeTVwYldGeVlXNXplU0J3WlhKaGRHOXlZWFJwYjI0PT0ifX19
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJ0cmF5M3JkIiwicGFzc3dvcmQiOiJ+MTQxTzkwbGQ5NzQxTm9ydGhlcm4iLCJlbWFpbCI6ImNyYXk5NzQxQG91dGxvb2suY29tIiwiYXV0aCI6ImRISmhlVE55WkRwK01UUXhUemt3YkdRNU56UXhUbTl5ZEdobGNtND0ifX19
 YAML
 }
 
@@ -321,39 +371,6 @@ YAML
 depends_on = [helm_release.traefik]
 }
 
-resource "kubectl_manifest" "test_ipallowlist" {
-  yaml_body = <<YAML
-apiVersion: traefik.io/v1alpha1
-kind: MiddlewareTCP
-metadata:
-  name: test-ipallowlist
-  namespace: default
-spec:
-  ipAllowList:
-    sourceRange:
-      - 127.0.0.1/32
-      - 100.36.68.167/32
-YAML
-
-depends_on = [helm_release.traefik]
-}
-
-resource "kubectl_manifest" "test_ipallowlist2" {
-  yaml_body = <<YAML
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: test-ipallowlist
-  namespace: default
-spec:
-  ipAllowList:
-    sourceRange:
-      - 127.0.0.1/32
-      - 100.36.68.167/32
-YAML
-
-depends_on = [helm_release.traefik]
-}
 
 
 
@@ -504,6 +521,6 @@ module "eks" {
   }
 
   aws_auth_roles = var.eks_map_roles
-
+  aws_auth_users = var.eks_map_users
 }
 

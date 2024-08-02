@@ -32,6 +32,15 @@ eks_map_roles        = [
      groups = ["system:masters"]
   }
   ]
+
+eks_map_users        = [
+    {
+      userarn = "arn:aws:iam::038810797634:user/eksuser"
+      username = "eksuser"
+      groups = ["system:masters"]
+  }
+  ] 
+  
 sc_list  = ["1a", "1b", "1c"]
 
 
