@@ -318,8 +318,6 @@ resource "aws_iam_user_policy_attachment" "attach_EKS_Access_policy" {
 
 
 
-#IAM Role for serviceaccount
-
 resource "aws_iam_role" "eks-role" {
   name               = "eks-role-${var.env}"
   assume_role_policy = data.aws_iam_policy_document.eks-policy-assume-role.json
@@ -344,3 +342,128 @@ resource "aws_iam_role_policy_attachment" "attach_ViewOnlyAccess_policy" {
   role       = aws_iam_role.eks-role.name
   policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
 }
+
+# IAM User with Full EKS Access
+resource "aws_iam_user" "eks_user" {
+  name = "eksuser"
+}
+
+resource "aws_iam_user_policy" "eks_user_policy" {
+  name   = "eks-user-policy"
+  user   = aws_iam_user.eks_user.name
+  policy = data.aws_iam_policy_document.eks_user_policy.json
+}
+
+data "aws_iam_policy_document" "eks_user_policy" {
+  statement {
+    actions   = ["eks:*"]
+    resources = ["*"]
+  }
+}
+
+#For pods s3 accessing
+data "aws_iam_policy_document" "s3-policy-2" {
+
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Federated"
+      identifiers = [module.eks.oidc_provider_arn]
+    }
+
+    actions = [
+      "sts:AssumeRoleWithWebIdentity"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      values   = ["sts.amazonaws.com"]
+      variable = "${replace(module.eks.cluster_oidc_issuer_url, "https://", "")}:aud"
+    }
+  }
+}
+
+#IAM role for s3 accessing
+resource "aws_iam_role" "eks-access-s3" {
+  name               = "eks-${var.env}-s3-2"
+  assume_role_policy = data.aws_iam_policy_document.s3-policy-2.json
+}
+
+
+data "aws_iam_policy_document" "policy" {
+  statement {
+    effect    = "Allow"
+
+    actions   = [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject",
+        ]
+
+    resources = [
+        aws_s3_bucket.s3-tools-results-5439283.arn,
+        "${aws_s3_bucket.s3-tools-results-5439283.arn}/*",
+         ]
+  },
+
+  statement {
+    effect    = "Allow"
+
+    actions   = [
+          "ssm:GetParameter",
+        ]
+
+    resources = [
+        "arn:aws:ssm:us-east-1:#623045223656#:parameter/GITHUB_API_KEY",
+        "arn:aws:ssm:us-east-1:#623045223656#:parameter/DOJO_URL",
+        "arn:aws:ssm:us-east-1:#623045223656#:parameter/DOJO_API_KEY",
+        "arn:aws:ssm:us-east-1:#623045223656#:parameter/JIRA_API_KEY",
+        "arn:aws:ssm:us-east-1:#623045223656#:parameter/JIRA_URL",
+        "arn:aws:ssm:us-east-1:#623045223656#:parameter/JIRA_USER",
+         ]
+  },
+
+  statement {
+    effect    = "Allow"
+
+    actions   = [
+          "ssm:DescribeParameters",
+        ]
+
+    resources = [
+       "*",
+         ]
+  },
+
+  statement {
+    effect    = "Allow"
+
+    actions   = [
+          "kms:Decrypt",
+        ]
+
+    resources = [
+        "arn:aws:kms:us-east-1:623045223656:key/aws/ssm",
+         ]
+  },
+
+}
+
+resource "aws_iam_policy" "policy" {
+  name        = "test-policy"
+  description = "A test policy"
+  policy      = data.aws_iam_policy_document.policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach" {
+  role       = aws_iam_role.eks-access-s3.name
+  policy_arn = aws_iam_policy.policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "test-attach-2" {
+  role       = aws_iam_role.eks-access-s3.name
+  policy_arn = aws_iam_policy.policy.arn
+}
+
+     

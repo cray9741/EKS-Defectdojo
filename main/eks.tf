@@ -161,7 +161,7 @@ metadata:
   name: scan-account
   namespace: default
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::038810797634:role/eks-manage-role-nonprod
+    eks.amazonaws.com/role-arn: arn:aws:iam::038810797634:role/eks-nonprod-s3-2
 YAML
 
 }

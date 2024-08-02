@@ -77,3 +77,7 @@ db_deletion_protection = false
 db_performance_insights_enabled = false
 db_apply_immediately = true
 db_multi_az = false
+
+#================= S3 =======================#
+
+bucket_name = "tools-bucket-cloudranger-30293812"

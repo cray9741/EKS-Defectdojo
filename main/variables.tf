@@ -141,13 +141,13 @@ variable "allowed_cidr_blocks" {
 }
 
 
-# kms key deletion period
+#================= AWS KMS =======================#
 variable "kms_deletion_window_in_days" {
   type        = string
   description = "KMS key for EKS secrets - deletion period"    
 }
 
-
+#================= RDS =======================#
 
 variable "db_identifier" {
   type        = string
@@ -244,5 +244,12 @@ variable "db_apply_immediately" {
 variable "db_multi_az" {
   type        = string
   description = "Specifies if the RDS instance is multi-AZ"    
+}
+
+#=============== S3 =================#
+
+variable "bucket_name" {
+  type        = string
+  description = "THe Bucekt name"    
 }
 
