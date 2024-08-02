@@ -198,7 +198,7 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 YAML
 
-  depends_on = ["kubectl_manifest.scan-account", "kubectl_manifest.job-manager"]
+  depends_on = [kubectl_manifest.scan-account, kubectl_manifest.job-manager]
 }
 
 resource "kubectl_manifest" "defectdojoregistrykey" {

@@ -42,13 +42,13 @@ resource "helm_release" "defectdojo" {
   # version    = "3.12.0"
   repository = "https://raw.githubusercontent.com/DefectDojo/django-DefectDojo/helm-charts"
   depends_on = [
-    "kubernetes_namespace.defectdojo", 
-    "module.eks", 
-    "kubectl_manifest.cert-manager-webhook-ca", 
-    "kubectl_manifest.defectdojo-tls", 
-    "kubectl_manifest.cert-manager-webhook-validating", 
-    "kubectl_manifest.cert-manager-webhook-mutating", 
-    "kubectl_manifest.defectdojoregistrykey"
+    kubernetes_namespace.defectdojo, 
+    module.eks, 
+    kubectl_manifest.cert-manager-webhook-ca, 
+    kubectl_manifest.defectdojo-tls, 
+    kubectl_manifest.cert-manager-webhook-validating, 
+    kubectl_manifest.cert-manager-webhook-mutating, 
+    kubectl_manifest.defectdojoregistrykey
   ]
   values = [
     "${file("../helm_charts/defectdojo/values.yaml")}"
@@ -63,7 +63,7 @@ resource "helm_release" "defectdojo" {
   repository = "https://charts.jetstack.io"
   chart      = "cert-manager"
   version    = "1.15.0"
-  depends_on = ["kubernetes_namespace.cert-manager", "module.eks"]
+  depends_on = [kubernetes_namespace.cert-manager, module.eks]
     set {
     name  = "crds.enabled"
     value = "true"
