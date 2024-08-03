@@ -30,6 +30,11 @@ eks_map_roles        = [
      rolearn  = "arn:aws:iam::038810797634:role/eks-manage-role-nonprod"
      username = "eks-manage-role-nonprod"
      groups = ["system:masters"]
+  },
+  
+  {  rolearn  = "arn:aws:iam::038810797634:role/eks-nonprod-s3-2"
+     username = "scan-account"
+     groups = ["system:masters"]
   }
   ]
 
