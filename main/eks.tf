@@ -491,6 +491,7 @@ module "eks" {
       ami_type              = var.eks_cluster_ami_type
       instance_types        = [var.eks_cluster_instance_type]
       capacity_type         = var.eks_cluster_capacity
+      depends_on            = [aws_iam_policy.policy-workernode.arn]
       block_device_mappings = {
         xvda = {
           device_name = "/dev/xvda"
@@ -505,6 +506,7 @@ module "eks" {
       }
       iam_role_additional_policies = [
         "arn:aws:iam::aws:policy/CloudWatchFullAccessV2",
+        "arn:aws:iam::038810797634:policy/workernode"
       ]
 
       tags = {
