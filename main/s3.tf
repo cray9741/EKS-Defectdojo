@@ -30,6 +30,64 @@ resource "aws_s3_bucket_public_access_block" "block" {
   depends_on = [aws_iam_role.eks-access-s3]
 }
 
+
+resource "aws_s3_bucket_object" "prowler" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "prowler/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "trivy" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "trivy/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "checkov" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "checkov/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "kubescape" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "kubescape/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "dependabot" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "dependabot/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "trufflehog" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "trufflehog/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "zaproxy" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "zaproxy/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+
 # Attach a Policy to the Bucket to Grant the User GetObject and ListBucket Permissions
 # resource "aws_s3_bucket_policy" "bucket_policy" {
 #   bucket = aws_s3_bucket.s3-tools-results-5439283.id
