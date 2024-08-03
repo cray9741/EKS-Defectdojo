@@ -1,6 +1,6 @@
-import base64
 import subprocess
 import boto3
+import base64
 import yaml
 import os
 import logging
@@ -18,17 +18,20 @@ def update_kubeconfig(cluster_name, region):
         logger.error(f"Failed to update kubeconfig: {e}")
         raise
 
-def get_ca_data():
-    # Read kubeconfig to get CA data
+def get_ca_data(cluster_name, region):
+    # Get CA data using AWS CLI
     try:
-        kubeconfig_path = os.path.expanduser('~/.kube/config')
-        with open(kubeconfig_path, 'r') as file:
-            kubeconfig = yaml.safe_load(file)
-            ca_data_base64 = kubeconfig['clusters'][0]['cluster']['certificate-authority-data']
-        logger.info("CA data extracted successfully.")
+        result = subprocess.run(
+            ['aws', 'eks', 'describe-cluster', '--region', region, '--name', cluster_name, '--query', 'cluster.certificateAuthority.data', '--output', 'text'],
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        ca_data_base64 = result.stdout.strip()
+        logger.info("CA data retrieved successfully.")
         return ca_data_base64
-    except Exception as e:
-        logger.error(f"Failed to extract CA data: {e}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Failed to retrieve CA data: {e}")
         raise
 
 def get_eks_token(cluster_name, region):
@@ -42,9 +45,8 @@ def get_eks_token(cluster_name, region):
         )
         token_info = yaml.safe_load(result.stdout)
         token = token_info['status']['token']
-        token_base64 = base64.b64encode(token.encode('utf-8')).decode('utf-8')
-        logger.info("Token retrieved and encoded successfully.")
-        return token_base64
+        logger.info("Token retrieved successfully.")
+        return token
     except subprocess.CalledProcessError as e:
         logger.error(f"Failed to retrieve token: {e}")
         raise
@@ -83,7 +85,7 @@ def generate_kubeconfig_data(cluster_name, server_url, ca_data, token):
         'apiVersion': 'v1',
         'clusters': [{
             'cluster': {
-                'certificate-authority-data': 'ca_data',
+                'certificate-authority-data': ca_data,
                 'server': server_url
             },
             'name': f'arn:aws:eks:{region}:{account_id}:cluster/{cluster_name}'
@@ -101,7 +103,7 @@ def generate_kubeconfig_data(cluster_name, server_url, ca_data, token):
         'users': [{
             'name': 'eksuser',
             'user': {
-                'token': 'token'
+                'token': token
             }
         }]
     }
@@ -110,49 +112,29 @@ def generate_kubeconfig_data(cluster_name, server_url, ca_data, token):
 if __name__ == '__main__':
     cluster_name = 'legion-nonprod'
     region = 'us-east-1'
-    server_url = 'https://BE5FF6A81664087C498DDB4AACEBA20D.sk1.us-east-1.eks.amazonaws.com'
+    server_url = 'https://DF9D54465DC4BEEB5B345B5E8F534EFE.gr7.us-east-1.eks.amazonaws.com'
     account_id = '038810797634'
 
     try:
         update_kubeconfig(cluster_name, region)
-        ca_data_base64 = get_ca_data()
-        token_base64 = get_eks_token(cluster_name, region)
+        ca_data_base64 = get_ca_data(cluster_name, region)
+        token = get_eks_token(cluster_name, region)
 
-        # Store the base64-encoded CA data and token in AWS SSM Parameter Store
-        store_in_parameter_store('eksuser_token', token_base64, 'EKS User Token')
+        # Print the CA data and token
+        print("CA data:", ca_data_base64)
+        print("Token:", token)
+
+        # Use the printed CA data and token to store in AWS SSM Parameter Store
+        store_in_parameter_store('eksuser_token', token, 'EKS User Token')
         store_in_parameter_store('cluster_certificate_authority_data', ca_data_base64, 'Cluster Certificate Authority Data')
 
         # Prompt for other secrets and store them
-        input_and_store_secrets()
+        # input_and_store_secrets()
 
-        kubeconfig_data = generate_kubeconfig_data(cluster_name, server_url, ca_data_base64, token_base64)
+        kubeconfig_data = generate_kubeconfig_data(cluster_name, server_url, ca_data_base64, token)
 
-        print("kubeconfig_data = {")
-        print(f"    'apiVersion': 'v1',")
-        print(f"    'clusters': [{{")
-        print(f"        'cluster': {{")
-        print(f"            'certificate-authority-data': '{ca_data_base64}',")
-        print(f"            'server': '{server_url}'")
-        print(f"        }},")
-        print(f"        'name': 'arn:aws:eks:{region}:{account_id}:cluster/{cluster_name}'")
-        print(f"    }}],")
-        print(f"    'contexts': [{{")
-        print(f"        'context': {{")
-        print(f"            'cluster': 'arn:aws:eks:{region}:{account_id}:cluster/{cluster_name}',")
-        print(f"            'user': 'eksuser'")
-        print(f"        }},")
-        print(f"        'name': 'arn:aws:eks:{region}:{account_id}:cluster/{cluster_name}'")
-        print(f"    }}],")
-        print(f"    'current-context': 'arn:aws:eks:{region}:{account_id}:cluster/{cluster_name}',")
-        print(f"    'kind': 'Config',")
-        print(f"    'preferences': {{}},")
-        print(f"    'users': [{{")
-        print(f"        'name': 'eksuser',")
-        print(f"        'user': {{")
-        print(f"            'token': '{token_base64}'")
-        print(f"        }}")
-        print(f"    }}]")
-        print(f"}}")
+        # Print the kubeconfig data
+        print(yaml.dump(kubeconfig_data))
 
     except Exception as e:
         logger.error(f"An error occurred: {e}")
