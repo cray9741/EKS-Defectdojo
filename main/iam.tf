@@ -422,8 +422,8 @@ data "aws_iam_policy_document" "policy" {
       "arn:aws:ssm:us-east-1:038810797634:parameter/JIRA_URL",
       "arn:aws:ssm:us-east-1:038810797634:parameter/JIRA_USER",
       "arn:aws:ssm:us-east-1:038810797634:parameter/eksuser_token",
-      "arn:aws:ssm:us-east-1:038810797634:parameter/cluster_certificate_authority_data"
-           
+      "arn:aws:ssm:us-east-1:038810797634:parameter/cluster_certificate_authority_data",
+      "arn:aws:ssm:us-east-1:038810797634:parameter/EKS_SERVER_URL"
     ]
   }
 
