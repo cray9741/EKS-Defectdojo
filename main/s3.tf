@@ -87,6 +87,55 @@ resource "aws_s3_bucket_object" "zaproxy" {
   depends_on = [aws_s3_bucket.s3-tools-results-5439283]
 }
 
+resource "aws_s3_bucket_object" "prowler-processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/prowler/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "trivy-processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/trivy/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "checkov-processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/checkov/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "kubescape-processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/kubescape/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "dependabot-processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/dependabot/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "trufflehog-processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/trufflehog/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
+resource "aws_s3_bucket_object" "zaproxy-processed" {
+  bucket = aws_s3_bucket.s3-tools-results-5439283.bucket
+  key    = "processed/zaproxy/"
+  acl    = "private"
+  depends_on = [aws_s3_bucket.s3-tools-results-5439283]
+}
+
 
 # Attach a Policy to the Bucket to Grant the User GetObject and ListBucket Permissions
 # resource "aws_s3_bucket_policy" "bucket_policy" {
