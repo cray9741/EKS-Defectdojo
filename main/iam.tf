@@ -415,8 +415,8 @@ data "aws_iam_policy_document" "policy" {
     ]
 
     resources = [
-      "arn:aws:ssm:us-east-1:038810797634:parameter/GITHUB_API_KEY",
-      "arn:aws:ssm:us-east-1:038810797634:parameter/DOJO_URL",
+      "arn:aws:ssm:us-east-1:038810797634:parameter/GITHUB_TOKEN",
+      "arn:aws:ssm:us-east-1:038810797634:parameter/DOJO_IMPORT_URL",
       "arn:aws:ssm:us-east-1:038810797634:parameter/DOJO_API_KEY",
       "arn:aws:ssm:us-east-1:038810797634:parameter/JIRA_API_KEY",
       "arn:aws:ssm:us-east-1:038810797634:parameter/JIRA_URL",
@@ -479,7 +479,8 @@ data "aws_iam_policy_document" "policy-workernode" {
 
     resources = [
       "arn:aws:ssm:us-east-1:038810797634:parameter/eksuser_token",
-      "arn:aws:ssm:us-east-1:038810797634:parameter/cluster_certificate_authority_data"
+      "arn:aws:ssm:us-east-1:038810797634:parameter/cluster_certificate_authority_data",
+      "arn:aws:ssm:us-east-1:038810797634:parameter/EKS_SERVER_URL"
     ]
   }
 
@@ -504,6 +505,6 @@ resource "aws_iam_policy" "policy-workernode" {
 
 
 resource "aws_iam_role_policy_attachment" "attach-workernode" {
-  role       = "eks_managed_node1-eks-node-group-20240802200739219100000004"
+  role       = "eks_managed_node1-eks-node-group-20240803180800743100000004"
   policy_arn = aws_iam_policy.policy-workernode.arn
 }
