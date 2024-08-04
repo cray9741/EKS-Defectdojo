@@ -1047,7 +1047,7 @@ module "eks" {
         "arn:aws:iam::038810797634:policy/workernode"
       ]
 
-      tags = {k
+      tags = {
         "k8s.io/cluster-autoscaler/${var.eks_cluster_name}" = "owned"
         "k8s.io/cluster-autoscaler/enabled"                 = "TRUE"
       }
