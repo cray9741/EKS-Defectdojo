@@ -15,6 +15,7 @@ enable_dns_hostnames = true
 enable_dns_support = true
 
 #================= EKS =======================#
+iam_role_name         = "eks_managed_node1"
 eks_cluster_version   = "1.29"
 eks_cluster_name      = "legion-nonprod"
 eks_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]

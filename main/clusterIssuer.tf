@@ -35,7 +35,7 @@ metadata:
 spec:
   secretName: defectdojo-tls
   issuerRef:
-    name: cloudflareissuer
+    name: letsencrypt-staging
     kind: ClusterIssuer
   commonName: defectdojo.secops-ba.win
   dnsNames:
