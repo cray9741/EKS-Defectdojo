@@ -252,3 +252,8 @@ variable "bucket_name" {
   type        = string
   description = "THe Bucekt name"    
 }
+variable "iam_role_name" {
+  description = "Name to use on IAM role created"
+  type        = string
+  default     = null
+}

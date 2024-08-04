@@ -364,9 +364,3 @@ resource "aws_iam_policy" "policy-workernode" {
   description = "A workernode policy"
   policy      = data.aws_iam_policy_document.policy-workernode.json
 }
-
-
-resource "aws_iam_role_policy_attachment" "attach-workernode" {
-  role       = "eks_managed_node1-eks-node-group-20240803180800743100000004"
-  policy_arn = aws_iam_policy.policy-workernode.arn
-}

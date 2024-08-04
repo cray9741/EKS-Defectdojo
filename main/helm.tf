@@ -23,10 +23,6 @@ resource "helm_release" "defectdojo" {
   depends_on = [
     kubernetes_namespace.defectdojo, 
     module.eks, 
-    kubectl_manifest.cert-manager-webhook-ca, 
-    kubectl_manifest.defectdojo-tls, 
-    kubectl_manifest.cert-manager-webhook-validating, 
-    kubectl_manifest.cert-manager-webhook-mutating, 
     kubectl_manifest.defectdojoregistrykey
   ]
   values = [
