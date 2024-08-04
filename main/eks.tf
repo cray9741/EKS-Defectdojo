@@ -37,7 +37,7 @@ provider "helm" {
 ### kubernetes manifest's
 ###
 
-
+#============= Cert Manager TLS ==============#
 resource "kubectl_manifest" "defectdojo-tls" {
   yaml_body = <<YAML
 apiVersion: v1
@@ -82,12 +82,11 @@ metadata:
   resourceVersion: "5566"
   uid: 537554f4-9375-4f17-ab8d-98889dbc00b7
 type: kubernetes.io/tls
+
 YAML
-
-
 }
 
-
+#============= Cert Manager ==============#
 resource "kubectl_manifest" "cert-manager-webhook-ca" {
   yaml_body = <<YAML
 apiVersion: v1
@@ -104,9 +103,8 @@ data:
   tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUN5RENDQWJBQ0ZEYThQTXAyOXNuRGRVd2hJYThTZG5sV21xM1JNQTBHQ1NxR1NJYjNEUUVCQ3dVQU1DSXgKSURBZUJnTlZCQU1NRjJObGNuUXRiV0Z1WVdkbGNpMTNaV0pvYjI5ckxXTmhNQjRYRFRJME1EY3lNREEyTXpneQpPRm9YRFRJMU1EY3lNREEyTXpneU9Gb3dIekVkTUJzR0ExVUVBd3dVWTJWeWRDMXRZVzVoWjJWeUxYZGxZbWh2CmIyc3dnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUFBNElCRHdBd2dnRUtBb0lCQVFETTMzcmtBblVTOURhMlYveGkKa3d3Mm9BNE5TY3podWNLcHUyOU9CYkFzUTZQTjFmYnh5V0tZb1RNS0lQSmYraGg0aHFNaDV3TVk4VXZrT0NkeQpKVThLWFRIRndYRis3VDcvcHBsWlFnVndYbU5YMmZ1dXFHVzUwaldDYUV5M1BMYVA2OCtVYjBUS1hqVDV6bVp1CkozSEFGNGhtTXRWZFNra2NtT0FNVHJPMFdudjk1OHB0bW1tT2YyemZKMnBGRHNFRFJMUWxRdDRqUWJWM09USkQKM2U3cHdnUjhjOXEzeDV0aGhpZ1NHUW1hQWdJS1ZZWXpWOUtKc0k1cmtQMDhMNjh1TllGZlY1ZkdPRS9oamY5dwpQdFI2UWFNeGp5UVZYTEtLb0NWMzkwWjNXaWZBdXFpZUhxbERjR2cyN3lCWmw5TjFHTjBIdzZyZkVDQ1kwNTdZCi82T0JBZ01CQUFFd0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFIaC9qcmdicXpPWXNZZU1PSnhRbXVqNit2SXcKUE50ZEJMSlpLTE1QUjREUDl2T0puYmI0Zms2Z2dQUWFTYXA4OXVVU2RwV1RpNEFKZGlYS1BxaHFKdmJnOUM4VQo3QW9DQUNsWkM0djcrMVdGczBLcmlpWC8xajhXSzBpaGV3QmpFd1N5QWtJbTZBbjV4Wkd0K1BPK0E2bmxLSzlWClQwYnlIRkthdi81QzJwQXQ4SXdOOHFJTWU0aEFuZ0JmbmNEMnJnejd6TWpNV1plVFI4MzNMOC9IYWsvZi9pSEEKQjVOTnpQNU9vUHNaZUtGeTlXVnlYQVBjQi96YlNxSFdUL01OYllzRmVDTjhac3ByQ2pHVCtxVlh1ZWlEYW5BRQppb1UwU3VLZ3VaMTJzQlNCYnl4QWxQUWhJQkM0eEEwcndMMGtlOE9yQWlsYnY2c0RkMDJxMHJpUnNOYz0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
   tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2QUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktZd2dnU2lBZ0VBQW9JQkFRRE0zM3JrQW5VUzlEYTIKVi94aWt3dzJvQTROU2N6aHVjS3B1MjlPQmJBc1E2UE4xZmJ4eVdLWW9UTUtJUEpmK2hoNGhxTWg1d01ZOFV2awpPQ2R5SlU4S1hUSEZ3WEYrN1Q3L3BwbFpRZ1Z3WG1OWDJmdXVxR1c1MGpXQ2FFeTNQTGFQNjgrVWIwVEtYalQ1CnptWnVKM0hBRjRobU10VmRTa2tjbU9BTVRyTzBXbnY5NThwdG1tbU9mMnpmSjJwRkRzRURSTFFsUXQ0alFiVjMKT1RKRDNlN3B3Z1I4YzlxM3g1dGhoaWdTR1FtYUFnSUtWWVl6VjlLSnNJNXJrUDA4TDY4dU5ZRmZWNWZHT0UvaApqZjl3UHRSNlFhTXhqeVFWWExLS29DVjM5MFozV2lmQXVxaWVIcWxEY0dnMjd5QlpsOU4xR04wSHc2cmZFQ0NZCjA1N1kvNk9CQWdNQkFBRUNnZ0VBQ1UwMk42Ynk2TTdrc3dld29rc1oyVnNQK0VON0JWNlpPM3FTbGFERmZHVC8KeVdjbkJKaEhuVFZvYTFQT25WUHVDMzdWWmtNbVRWb2JQM3ZiTXFBR0JDcnlDUS84MXEzdjE4eVpGc2ZjRmx0Ngp1RERoNys2ZVc3N3pCZjQxU1haOHRYRVg1aDNkS2pEM3g4VzZ1ZEtacEFhTmYxSmNoSlZNVjN1TFpKT29MZzUrCnhFc3hTb0J6NE1BcHpQS2NlVEd1Q1VXYVFzd1lLZm9INnVETGIyM3dBWVdDQTN5OFpEZS9mKzEzVkI1c0hSQi8KbWlnZjBBZllPQUVMZzZWWGpjOHRwelB4U3QyR25lNGREN2E3Mm9CNFJybW9iV2tkeXFYV21PeGdKTURJVURPagp1cCtEM1hybUkrcm5MWlY3UkdBeVJsNmRTdml3eGhPc0lIUGhFaVF0YVFLQmdRRDZwQTZJWDFVZkN1T2Rzam9sClZGS2lFMnFud2tYdE1iZ3F1NzFvTWduMGhWT1NlKzI1NEN6K3hPOEdsVkJ1bGtsbWJ3N3daaVRQeVA3MjZRVmIKUGk5TFovd3pxaVpZRkF3cGMyMnYrcjc2T1FqRHM5OEo2RU1JNW55MzNPSTdlcUE1L3B0Q2o4R3dORUo2ZXdpeQpVa1J6SzVWTmo0VEVpOFpLYXZiNTBFUmZCUUtCZ1FEUlFPYllLL21oL3NQNzBaQnhleEZHMFpraHBXdVdObVJ0Ckw5UTFGRDk4VDJUNmRKdWwwSlI4Q0M1bksxUTR6ajE1M2ZvbEZNU0U1U1o0V1Rld0FNY1gwSlU3dmlmZlZ1bFkKQzNYcERsQ0NSQ2N0OHlxT21tWFRqNm9Ha1JDOFJBTFpwWE9nL2J4S1ZnYTdKVjNSU0l0SldsZnRITXA0MGxNOQpkRjRyZHFvRFRRS0JnQm1SN3lHZWlES1lpOHdreUtYU1NuUGFnMEVHSXRnbUFHSHJzVkVWK2NvR2FCWkRxbWNTCkpjVUFGbHFYbFJNVEpmM2JTcXpmM3RXTDdlY0dzdE15THVVRWdNaE1qWWppMHJMUDRkcllPKytQTGdPNU1BSDAKdmhJRVlham9VZlE3ZUdreVBtaTEvYzZhSmtZVWt6aU9DQW12NHBWOUZOQndhaFJoZ1R6UE1JcDVBb0dBT2lJYwp2OHVmdzRpQ3JBL3hZQVYvckR3SW5kZFdCMW8vRmpKbWN3U1lDcElJREtpZW9UZE1PUlVReHlxN2NEaWp6WnFFCnB3Nlk5ZzZ2WEZuMDVabWh0aFVGa0o1b2QxeXU0UDMyR1BRWUc4aVJWZXVyVkFqQzV6NlBUdG00VzRWTmdXZTgKc3VvckNEL1VDT1A5cDJuUEFHYnY3SGpHSzBETFRWUnA0UXRMZWpVQ2dZQkU4YS82VXBDck1aNm5NOWphcElRZgprejVjWWJHSFFDZmw4MkF6elNUaEIwb3p6ODBWY1VJdW44d3pYRkRqOXhJZThXUFlTWEJwSzdQazhSRUxMUmJEClYvNWlwNnpCMzNiSC9Vd2p4MFFnKytxMDA1aHdBcTF6WHZuVDkyU0VGeEFBUkluM3NVdkMvKzNzU2lCeEIzVFcKU3k0aHNBcUZ4ZXN2eGdvcFFDSGFNQT09Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
 type: Opaque
+
 YAML
-
-
 }
 
 
@@ -148,11 +146,11 @@ webhooks:
     scope: '*'
   sideEffects: None
   timeoutSeconds: 30
+
 YAML
-
-
 }
 
+#============= Service Accounts ==============#
 resource "kubectl_manifest" "scan-account" {
   yaml_body = <<YAML
 apiVersion: v1
@@ -162,10 +160,11 @@ metadata:
   namespace: default
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::038810797634:role/eks-nonprod-s3-2
-YAML
 
+YAML
 }
 
+#============= EKS Roles ==============#
 resource "kubectl_manifest" "job-manager" {
   yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
@@ -177,10 +176,11 @@ rules:
 - apiGroups: ["batch"]
   resources: ["jobs", "jobs/status"]
   verbs: ["create", "get", "list", "watch", "update", "patch", "delete"]
-YAML
 
+YAML
 }
 
+#============= EKS Role Bindings ==============#
 resource "kubectl_manifest" "job-manager-binding" {
   yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
@@ -196,11 +196,12 @@ roleRef:
   kind: Role
   name: job-manager
   apiGroup: rbac.authorization.k8s.io
-YAML
 
+YAML
   depends_on = [kubectl_manifest.scan-account, kubectl_manifest.job-manager]
 }
 
+#============= Defectdojo Docker Registry Key ==============#
 resource "kubectl_manifest" "defectdojoregistrykey" {
   yaml_body = <<YAML
 apiVersion: v1
@@ -211,10 +212,11 @@ metadata:
 type: kubernetes.io/dockerconfigjson
 data:
   .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJ0cmF5M3JkIiwicGFzc3dvcmQiOiJ+MTQxTzkwbGQ5NzQxTm9ydGhlcm4iLCJlbWFpbCI6ImNyYXk5NzQxQG91dGxvb2suY29tIiwiYXV0aCI6ImRISmhlVE55WkRwK01UUXhUemt3YkdRNU56UXhUbTl5ZEdobGNtND0ifX19
+
 YAML
 }
 
-
+#============= Traefik  ==============#
 resource "kubectl_manifest" "cert-manager-webhook-validating" {
   yaml_body = <<YAML
 apiVersion: admissionregistration.k8s.io/v1
@@ -259,8 +261,8 @@ webhooks:
     scope: '*'
   sideEffects: None
   timeoutSeconds: 30
-YAML
 
+YAML
 depends_on = [helm_release.traefik]
 }
 
@@ -275,7 +277,6 @@ spec:
   minVersion: VersionTLS12
 
 YAML
-
 depends_on = [helm_release.traefik]
 }
 
@@ -290,8 +291,8 @@ spec:
   redirectScheme:
     scheme: https
     permanent: true
-YAML
 
+YAML
 depends_on = [helm_release.traefik]
 }
 
@@ -317,8 +318,8 @@ spec:
           port: http
   tls:
     secretName: defectdojo-tls
-YAML
 
+YAML
 depends_on = [helm_release.traefik]
 }
 
@@ -344,8 +345,8 @@ spec:
         - name: defectdojo-django
           namespace: defectdojo
           port: http
-YAML
 
+YAML
 depends_on = [helm_release.traefik]
 }
 
@@ -366,15 +367,657 @@ spec:
     stsSeconds: 31536000
     stsIncludeSubdomains: true
     stsPreload: true
-YAML
 
+YAML
 depends_on = [helm_release.traefik]
 }
 
 
+#============= Checkov Cronjobs ==============#
+resource "kubectl_manifest" "checkov-scan-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: checkov-scan-s3-upload-cronjob
+spec:
+  schedule: "0 0 * * *"  # Runs at 12:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: checkov-scan-s3-upload-container
+              image: tray3rd/checkov-scan-s3-upload:latest
+              env:
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "checkov"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: SEARCH_DIRECTORY
+                  value: "/output"
+              resources:
+                requests:
+                  memory: "2Gi"
+                  cpu: "1"
+                limits:
+                  memory: "4Gi"
+                  cpu: "2"
+          restartPolicy: Never
 
+YAML
+}
 
-#KMS key to encrypt EKS EBS
+resource "kubectl_manifest" "checkov-dojo-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: checkov-cronjob
+spec:
+  schedule: "30 0 * * *"  # Runs at 12:30 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: checkov-push
+              image: tray3rd/checkovdojo:latest 
+              env:
+                - name: DOJO_PROD_ID
+                  value: "1"
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "checkov"
+                - name: S3_PROCESSED
+                  value: "processed/checkov"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python"]
+              args: ["entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "checkov-rr-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: checkov-rr-cronjob
+spec:
+  schedule: "0 1 * * *"  # Runs at 1:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: checkov-rr
+              image: tray3rd/checkovrr:latest
+              imagePullPolicy: Always
+              env:
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python", "entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+#============= Kubescape Cronjobs ==============#
+resource "kubectl_manifest" "kubescape-scan-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kubescape-scan-s3-upload-cronjob
+spec:
+  schedule: "0 0 * * *"  # Runs at 12:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: kubescape-scan-s3-upload-container
+              image: tray3rd/kubescape-scan-s3-upload:latest
+              env:
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "kubescape"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: SEARCH_DIRECTORY
+                  value: "/output"
+              resources:
+                requests:
+                  memory: "2Gi"
+                  cpu: "1"
+                limits:
+                  memory: "4Gi"
+                  cpu: "2"
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "kubescape-dojo-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kubescape-push-cronjob
+spec:
+  schedule: "30 0 * * *"  # Runs at 12:30 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: kubescape-push
+              image: tray3rd/kubescapedojo:latest  # Replace with your Docker image name
+              env:
+                - name: DOJO_PROD_ID
+                  value: "1"
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "kubescape"
+                - name: S3_PROCESSED
+                  value: "processed/kubescape"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python"]
+              args: ["entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "kubescape-rr-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kubescape-rr-cronjob
+spec:
+  schedule: "0 1 * * *"  # Runs at 1:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          containers:
+            - name: kubescape-rr
+              image: tray3rd/kubescaperr:latest
+              imagePullPolicy: Always
+              env:
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python", "entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+#============= Dependabot Cronjobs ==============#
+resource "kubectl_manifest" "dependabot-dojo-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: dependabot-push-cronjob
+spec:
+  schedule: "30 0 * * *"  # Runs at 12:30 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: dependabot-push
+              image: tray3rd/dependabotdojo:latest  # Replace with your Docker image name
+              env:
+                - name: DOJO_PROD_ID
+                  value: "1"
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "dependabot"
+                - name: S3_PROCESSED
+                  value: "processed/dependabot"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: AWS_REGION
+                  value: "us-east-1"
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "dependabot-rr-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: dependabot-rr-cronjob
+spec:
+  schedule: "0 1 * * *"  # Runs at 1:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          containers:
+            - name: dependabot-rr
+              image: tray3rd/dependabotrr:latest
+              imagePullPolicy: Always
+              env:
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python", "entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+#============= Prowler Cronjobs ==============#
+resource "kubectl_manifest" "prowler-scan-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: prowler-scan-s3-upload-cronjob
+spec:
+  schedule: "0 0 * * *"  # Runs at 12:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: prowler-scan-s3-upload-container
+              image: tray3rd/prowler-scan-s3-upload:latest
+              env:
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "prowler"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: SEARCH_DIRECTORY
+                  value: "/output"
+              resources:
+                requests:
+                  memory: "2Gi"
+                  cpu: "1"
+                limits:
+                  memory: "4Gi"
+                  cpu: "2"
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "prowler-dojo-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: prowler-push-cronjob
+spec:
+  schedule: "30 0 * * *"  # Runs at 12:30 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: prowler-push
+              image: tray3rd/prowlerdojo:latest  # Replace with your Docker image name
+              env:
+                - name: DOJO_PROD_ID
+                  value: "1"
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "prowler"
+                - name: S3_PROCESSED
+                  value: "processed/prowler"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python"]
+              args: ["entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "prowler-rr-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: prowler-rr-cronjob
+spec:
+  schedule: "0 1 * * *"  # Runs at 1:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          containers:
+            - name: prowler-rr
+              image: tray3rd/prowlerrr:latest
+              imagePullPolicy: Always
+              env:
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python", "entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+#============= Security Hub Cronjobs ==============#
+resource "kubectl_manifest" "sechub-dojo-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sechub-push-cronjob
+spec:
+  schedule: "30 0 * * *"  # Runs at 12:30 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: sechub-push
+              image: tray3rd/sechubdojo:latest  # Replace with your Docker image name
+              env:
+                - name: DOJO_PROD_ID
+                  value: "1"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python"]
+              args: ["entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "sechub-rr-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sechub-rr-cronjob
+spec:
+  schedule: "0 1 * * *"  # Runs at 1:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: sechub-rr
+              image: tray3rd/sechubrr:latest
+              imagePullPolicy: Always
+              env:
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python", "entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+#============= Trufflehog Cronjobs ==============#
+resource "kubectl_manifest" "trufflehog-scan-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: trufflehog-scan-s3-upload-cronjob
+spec:
+  schedule: "0 0 * * *"  # Runs at 12:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: trufflehog-scan-s3-upload-container
+              image: tray3rd/trufflehog-scan-s3-upload:latest
+              env:
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "trufflehog"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: SEARCH_DIRECTORY
+                  value: "/output"
+              resources:
+                requests:
+                  memory: "2Gi"
+                  cpu: "1"
+                limits:
+                  memory: "4Gi"
+                  cpu: "2"
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "trufflehog-dojo-cron" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: trufflehog-push-cronjob
+spec:
+  schedule: "30 0 * * *"  # Runs at 12:30 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: trufflehog-push
+              image: tray3rd/trufflehogdojo:latest  # Replace with your Docker image name
+              env:
+                - name: DOJO_PROD_ID
+                  value: "1"
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "trufflehog"
+                - name: S3_PROCESSED
+                  value: "processed/trufflehog"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python"]
+              args: ["entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "trufflehog-rr-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: trufflehog-rr-cronjob
+spec:
+  schedule: "0 1 * * *"  # Runs at 1:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: trufflehog-rr
+              image: tray3rd/trufflehogrr:latest
+              imagePullPolicy: Always
+              env:
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python", "entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+#============= Zaproxy Cronjobs ==============#
+resource "kubectl_manifest" "zaproxy-scan-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: zaproxy-scan-s3-upload-cronjob
+spec:
+  schedule: "0 0 * * *"  # Runs at 12:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: zaproxy-scan-s3-upload-container
+              image: tray3rd/zaproxy-scan-s3-upload:latest
+              env:
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "zaproxy"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+              resources:
+                requests:
+                  memory: "2Gi"
+                  cpu: "1"
+                limits:
+                  memory: "4Gi"
+                  cpu: "2"
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "zaproxy-dojo-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: zaproxy-push-cronjob
+spec:
+  schedule: "30 0 * * *"  # Runs at 12:30 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: zaproxy-push
+              image: tray3rd/zaproxydojo:latest  # Replace with your Docker image name
+              env:
+                - name: DOJO_PROD_ID
+                  value: "1"
+                - name: S3_BUCKET
+                  value: "tools-bucket-cloudranger-30293812"
+                - name: S3_FOLDER
+                  value: "zaproxy"
+                - name: S3_PROCESSED
+                  value: "processed/zaproxy"
+                - name: AWS_DEFAULT_REGION
+                  value: "us-east-1"
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python"]
+              args: ["entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+resource "kubectl_manifest" "zaproxy_rr_cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: zaproxy-rr-cronjob
+spec:
+  schedule: "0 1 * * *"  # Runs at 1:00 AM
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: scan-account
+          containers:
+            - name: zaproxy-rr
+              image: tray3rd/zaproxyrr:latest
+              imagePullPolicy: Always
+              env:
+                - name: AWS_REGION
+                  value: "us-east-1"
+              command: ["python", "entrypoint.py"]
+          restartPolicy: Never
+
+YAML
+}
+
+#============= KMS key to encrypt EKS EBS ==============#
 module "ebs_kms_key" {
   source      = "terraform-aws-modules/kms/aws"
   version     = "2.2.0"
@@ -394,7 +1037,7 @@ data "tls_certificate" "eks" {
   url = module.eks.cluster_oidc_issuer_url
 }
 
-#EKS cluster
+#============= EKS Cluster ==============#
 module "eks" {
 
   source  = "terraform-aws-modules/eks/aws"
