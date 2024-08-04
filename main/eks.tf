@@ -376,7 +376,7 @@ depends_on = [helm_release.traefik]
 #============= Checkov Cronjobs ==============#
 resource "kubectl_manifest" "checkov-scan-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: checkov-scan-s3-upload-cronjob
@@ -415,7 +415,7 @@ YAML
 
 resource "kubectl_manifest" "checkov-dojo-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: checkov-cronjob
@@ -452,7 +452,7 @@ YAML
 
 resource "kubectl_manifest" "checkov-rr-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: checkov-rr-cronjob
@@ -481,7 +481,7 @@ YAML
 #============= Kubescape Cronjobs ==============#
 resource "kubectl_manifest" "kubescape-scan-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: kubescape-scan-s3-upload-cronjob
@@ -520,7 +520,7 @@ YAML
 
 resource "kubectl_manifest" "kubescape-dojo-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: kubescape-push-cronjob
@@ -557,7 +557,7 @@ YAML
 
 resource "kubectl_manifest" "kubescape-rr-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: kubescape-rr-cronjob
@@ -585,7 +585,7 @@ YAML
 #============= Dependabot Cronjobs ==============#
 resource "kubectl_manifest" "dependabot-dojo-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: dependabot-push-cronjob
@@ -620,7 +620,7 @@ YAML
 
 resource "kubectl_manifest" "dependabot-rr-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: dependabot-rr-cronjob
@@ -648,7 +648,7 @@ YAML
 #============= Prowler Cronjobs ==============#
 resource "kubectl_manifest" "prowler-scan-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: prowler-scan-s3-upload-cronjob
@@ -687,7 +687,7 @@ YAML
 
 resource "kubectl_manifest" "prowler-dojo-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: prowler-push-cronjob
@@ -724,7 +724,7 @@ YAML
 
 resource "kubectl_manifest" "prowler-rr-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: prowler-rr-cronjob
@@ -752,7 +752,7 @@ YAML
 #============= Security Hub Cronjobs ==============#
 resource "kubectl_manifest" "sechub-dojo-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: sechub-push-cronjob
@@ -783,7 +783,7 @@ YAML
 
 resource "kubectl_manifest" "sechub-rr-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: sechub-rr-cronjob
@@ -812,7 +812,7 @@ YAML
 #============= Trufflehog Cronjobs ==============#
 resource "kubectl_manifest" "trufflehog-scan-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: trufflehog-scan-s3-upload-cronjob
@@ -851,7 +851,7 @@ YAML
 
 resource "kubectl_manifest" "trufflehog-dojo-cron" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: trufflehog-push-cronjob
@@ -888,7 +888,7 @@ YAML
 
 resource "kubectl_manifest" "trufflehog-rr-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: trufflehog-rr-cronjob
@@ -917,7 +917,7 @@ YAML
 #============= Zaproxy Cronjobs ==============#
 resource "kubectl_manifest" "zaproxy-scan-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: zaproxy-scan-s3-upload-cronjob
@@ -954,7 +954,7 @@ YAML
 
 resource "kubectl_manifest" "zaproxy-dojo-cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: zaproxy-push-cronjob
@@ -991,7 +991,7 @@ YAML
 
 resource "kubectl_manifest" "zaproxy_rr_cronjob" {
   yaml_body = <<YAML
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: zaproxy-rr-cronjob
