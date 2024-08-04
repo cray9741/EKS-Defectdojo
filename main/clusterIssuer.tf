@@ -4,7 +4,7 @@ resource "kubectl_manifest" "ClusterIssuer" {
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-staging
+  name: cloudflare-issuer
 spec:
   acme:
     email: chjackson3rd@gmail.com
@@ -14,13 +14,13 @@ spec:
     solvers:
     - dns01:
         cloudflare:
-          email: chjackson3rd@gmail.com
           apiKeySecretRef:
             name: cloudflare-api-key
-            key: apikey
+            key: api-key
+          email: chjackson3rd@gmail.com
       selector:
         dnsZones:
-        - 'secops-ba.win'
+        - secops-ba.win
 YAML
 }
 
@@ -35,7 +35,7 @@ metadata:
 spec:
   secretName: defectdojo-tls
   issuerRef:
-    name: letsencrypt-staging
+    name: cloudflare-issuer
     kind: ClusterIssuer
   commonName: defectdojo.secops-ba.win
   dnsNames:
