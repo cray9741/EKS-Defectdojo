@@ -331,6 +331,42 @@ resource "aws_iam_role_policy_attachment" "attach_ViewOnlyAccess_policy-2" {
   policy_arn = "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
 }
      
+data "aws_iam_policy_document" "policy-jira-parameter" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter*",
+      "ssm:GetParameters",
+    ]
+
+    resources = [
+      "arn:aws:ssm:us-east-1:038810797634:parameter/JIRA_API_KEY",
+      "arn:aws:ssm:us-east-1:038810797634:parameter/JIRA_URL",
+      "arn:aws:ssm:us-east-1:038810797634:parameter/JIRA_USER"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+    ]
+
+    resources = [
+      "arn:aws:kms:us-east-1:038810797634:key/aws/ssm",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "policy-jira" {
+  name        = "jira-perms"
+  description = "jira permissions"
+  policy      = data.aws_iam_policy_document.policy-jira-parameter.json
+}
+
+
 data "aws_iam_policy_document" "policy-workernode" {
   statement {
     effect = "Allow"
