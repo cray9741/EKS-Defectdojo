@@ -62,7 +62,7 @@ YAML
 resource "kubectl_manifest" "job-manager" {
   yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+kind: ClusterRole
 metadata:
   namespace: default
   name: job-manager
@@ -78,16 +78,15 @@ YAML
 resource "kubectl_manifest" "job-manager-binding" {
   yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
   name: job-manager-binding
-  namespace: default
 subjects:
 - kind: ServiceAccount
-  name: scan-account
-  namespace: default
+  name: defectdojo
+  namespace: defectdojo
 roleRef:
-  kind: Role
+  kind: ClusterRole
   name: job-manager
   apiGroup: rbac.authorization.k8s.io
 
