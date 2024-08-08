@@ -112,8 +112,6 @@ annotations: {}
 # Components
 celery:
   broker: rabbitmq
-  # To use an external celery broker, set the hostname here
-  brokerHost: ""
   logLevel: INFO
   beat:
     annotations: {}
@@ -128,10 +126,17 @@ celery:
         cpu: 2000m
         memory: 256Mi
     tolerations: []
+    env:
+      - name: DJANGO_SETTINGS_MODULE
+        value: "dojo.settings.settings"
+      - name: DD_DATABASE_URL
+        valueFrom:
+          secretKeyRef:
+            name: defectdojo-db-secret
+            key: database_url
   worker:
     annotations: {}
     affinity: {}
-    logLevel: INFO
     nodeSelector: {}
     replicas: 1
     resources:
@@ -142,6 +147,14 @@ celery:
         cpu: 2000m
         memory: 512Mi
     tolerations: []
+    env:
+      - name: DJANGO_SETTINGS_MODULE
+        value: "dojo.settings.settings"
+      - name: DD_DATABASE_URL
+        valueFrom:
+          secretKeyRef:
+            name: defectdojo-db-secret
+            key: database_url
     app_settings:
       pool_type: solo
       # Performance improved celery worker config when needing to deal with a lot of findings (e.g deduplication ops)
@@ -216,9 +229,16 @@ django:
   nodeSelector: {}
   replicas: 1
   tolerations: []
+  env:
+    - name: DJANGO_SETTINGS_MODULE
+      value: "dojo.settings.settings"
+    - name: DD_DATABASE_URL
+      valueFrom:
+        secretKeyRef:
+          name: defectdojo-db-secret
+          key: database_url
   uwsgi:
     livenessProbe:
-      # Enable liveness checks on uwsgi container. Those values are use on nginx readiness checks as well.
       enabled: true
       failureThreshold: 6
       initialDelaySeconds: 120

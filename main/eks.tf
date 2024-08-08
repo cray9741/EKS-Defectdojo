@@ -53,7 +53,7 @@ metadata:
   name: scan-account
   namespace: default
   annotations:
-    eks.amazonaws.com/role-arn: arn:aws:iam::038810797634:role/eks-nonprod-s3-2
+    eks.amazonaws.com/role-arn: arn:aws:iam::623045223656:role/eks-nonprod-s3-2
 
 YAML
 }
@@ -1043,8 +1043,8 @@ module "eks" {
       }
       iam_role_additional_policies = [
         "arn:aws:iam::aws:policy/CloudWatchFullAccessV2",
-        "arn:aws:iam::038810797634:policy/workernode",
-        "arn:aws:iam::038810797634:policy/jira-perms",
+        "arn:aws:iam::623045223656:policy/workernode",
+        "arn:aws:iam::623045223656:policy/jira-perms",
       ]
 
       tags = {

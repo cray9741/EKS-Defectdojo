@@ -28,12 +28,12 @@ eks_cluster_des_size      = "3"
 eks_max_unavailable_percentage = "50"
 eks_map_roles        = [
     {
-     rolearn  = "arn:aws:iam::038810797634:role/eks-manage-role-nonprod"
+     rolearn  = "arn:aws:iam::623045223656:role/eks-manage-role-nonprod"
      username = "eks-manage-role-nonprod"
      groups = ["system:masters"]
   },
   
-  {  rolearn  = "arn:aws:iam::038810797634:role/eks-nonprod-s3-2"
+  {  rolearn  = "arn:aws:iam::623045223656:role/eks-nonprod-s3-2"
      username = "scan-account"
      groups = ["system:masters"]
   }
@@ -41,7 +41,7 @@ eks_map_roles        = [
 
 eks_map_users        = [
     {
-      userarn = "arn:aws:iam::038810797634:user/eksuser"
+      userarn = "arn:aws:iam::623045223656:user/eksuser"
       username = "eksuser"
       groups = ["system:masters"]
   }
