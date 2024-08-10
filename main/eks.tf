@@ -58,7 +58,7 @@ metadata:
 YAML
 }
 
-#============= EKS Roles ==============#
+#============= EKS Cluster Roles ==============#
 resource "kubectl_manifest" "job-manager" {
   yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
@@ -74,7 +74,41 @@ rules:
 YAML
 }
 
-#============= EKS Role Bindings ==============#
+resource "kubectl_manifest" "secret-access" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: secret-access
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+YAML
+}
+
+resource "kubectl_manifest" "defectdojo-cluster-access" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: defectdojo-cluster-access
+rules:
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["statefulsets"]
+  verbs: ["get", "list", "watch", "update", "patch"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get", "list", "watch"]
+YAML
+}
+#============= EKS CLuster Role Bindings ==============#
 resource "kubectl_manifest" "job-manager-binding" {
   yaml_body = <<YAML
 apiVersion: rbac.authorization.k8s.io/v1
@@ -92,6 +126,40 @@ roleRef:
 
 YAML
   depends_on = [kubectl_manifest.scan-account, kubectl_manifest.job-manager]
+}
+
+resource "kubectl_manifest" "secret-access-binding" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: secret-access-binding
+subjects:
+- kind: ServiceAccount
+  name: defectdojo
+  namespace: defectdojo
+roleRef:
+  kind: ClusterRole
+  name: secret-access
+  apiGroup: rbac.authorization.k8s.io
+YAML
+}
+
+resource "kubectl_manifest" "defectdojo-cluster-access-binding" {
+  yaml_body = <<YAML
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: defectdojo-cluster-access-binding
+subjects:
+- kind: ServiceAccount
+  name: defectdojo
+  namespace: defectdojo
+roleRef:
+  kind: ClusterRole
+  name: defectdojo-cluster-access
+  apiGroup: rbac.authorization.k8s.io
+YAML
 }
 
 #============= Defectdojo Docker Registry Key ==============#
@@ -120,6 +188,7 @@ metadata:
 spec:
   entryPoints:
     - websecure
+    - web
   routes:
     - match: Host(`defectdojo.cloudlockops.io`)
       kind: Rule
@@ -137,7 +206,7 @@ YAML
 depends_on = [helm_release.traefik]
 }
 
-resource "kubectl_manifest" "IngressRouteSecure" {
+resource "kubectl_manifest" "IngressRouteInternal" {
   yaml_body = <<YAML
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -157,34 +226,6 @@ spec:
 YAML
 depends_on = [helm_release.traefik]
 }
-
-resource "kubectl_manifest" "IngressRoute" {
-  yaml_body = <<YAML
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: defectdojo-app
-  namespace: defectdojo
-spec:
-  entryPoints:
-    - web
-  routes:
-    - match: Host(`defectdojo.cloudlockops.io`)
-      kind: Rule
-      middlewares:
-        - name: https-redirect
-          namespace: defectdojo
-        - name: secure-headers
-          namespace: defectdojo
-      services:
-        - name: defectdojo-django
-          namespace: defectdojo
-          port: http
-
-YAML
-depends_on = [helm_release.traefik]
-}
-
 
 
 resource "kubectl_manifest" "secure_headers" {
@@ -207,7 +248,56 @@ YAML
 depends_on = [helm_release.traefik]
 }
 
+#============= RabbitMQ Fix Cronjobs ==============#
+resource "kubectl_manifest" "rabbitmq-fix-cronjob" {
+  yaml_body = <<YAML
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: rabbitmq-fix-cronjob
+  namespace: defectdojo
+spec:
+  schedule: "*/10 * * * *"  # Every 10 minutes
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 30
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: defectdojo
+          containers:
+            - name: rabbitmq-fix-container
+              image: bitnami/kubectl:latest
+              command:
+              - /bin/sh
+              - -c
+              args:
+              - | 
+                #!/bin/bash
 
+                # Step 1: Get the rabbitmq password
+                PASSWORD=$(kubectl get secret defectdojo-rabbitmq-specific -n defectdojo -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+
+                # Step 2: Execute the command in the defectdojo-rabbitmq-0 pod
+                kubectl exec defectdojo-rabbitmq-0 -n defectdojo -- /bin/bash -c "
+                # Step 3: Change the rabbitmq password
+                rabbitmqctl change_password user $PASSWORD
+                "
+
+                # Step 4: Restart the stateful set
+                kubectl rollout restart statefulset defectdojo-rabbitmq -n defectdojo
+
+              resources:
+                requests:
+                  memory: "2Gi"
+                  cpu: "1"
+                limits:
+                  memory: "4Gi"
+                  cpu: "2"
+          restartPolicy: Never
+
+YAML
+}
 #============= Checkov Cronjobs ==============#
 resource "kubectl_manifest" "checkov-scan-cronjob" {
   yaml_body = <<YAML
