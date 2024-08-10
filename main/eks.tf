@@ -110,85 +110,6 @@ YAML
 }
 
 #============= Traefik  ==============#
-resource "kubectl_manifest" "cert-manager-webhook-validating" {
-  yaml_body = <<YAML
-apiVersion: admissionregistration.k8s.io/v1
-kind: ValidatingWebhookConfiguration
-metadata:
-  annotations:
-    cert-manager.io/inject-ca-from-secret: cert-manager/cert-manager-webhook-ca
-    meta.helm.sh/release-name: cert-manager
-    meta.helm.sh/release-namespace: cert-manager
-  name: cert-manager-webhook-validating
-webhooks:
-- admissionReviewVersions:
-  - v1
-  clientConfig:
-    caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJ3VENDQVVlZ0F3SUJBZ0lRVk5uSTNCaS83WVVxRHhJS0wrUlB5akFLQmdncWhrak9QUVFEQXpBaU1TQXcKSGdZRFZRUURFeGRqWlhKMExXMWhibUZuWlhJdGQyVmlhRzl2YXkxallUQWVGdzB5TkRBM01qQXdOalV3TlRaYQpGdzB5TlRBM01qQXdOalV3TlRaYU1DSXhJREFlQmdOVkJBTVRGMk5sY25RdGJXRnVZV2RsY2kxM1pXSm9iMjlyCkxXTmhNSFl3RUFZSEtvWkl6ajBDQVFZRks0RUVBQ0lEWWdBRWUwdmNHajNhZDUwYm9UMjlSb0x1eUdFeko5OUIKT3l2SzRMdmQ1eG4yT3ZtdzVXcjhwalgzcnNXcWFNN3NNdWhZUUdicndxTDlLaTB5SE1HT3N0V3hRUGJFSTMrQwpiRkpvbytBNnpNUHg1akhXa3EreDE0OHg1RVpFVEVBbDk0WUlvMEl3UURBT0JnTlZIUThCQWY4RUJBTUNBcVF3CkR3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVUd0YWE1cHkwREozc1VTT1p1cUxqODYwRGxPOHcKQ2dZSUtvWkl6ajBFQXdNRGFBQXdaUUl4QU80Z0NXZXFSZmpNOGFTRGYzOFM1SDZYYnVSaEJoQ1N1TkdxaWlXcApzUlRtaFlmR1duc1U5TmlMazI5bUtZZ1krd0l3SGduR3l5QmhRN08vTzVvdTk4S2xDdUZQR0FlOTVtUEdsOVgwCi80cXdINUhUOXRuMS9Ud3JIQ2VnY2N1RXdlbGYKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
-    service:
-      name: cert-manager-webhook
-      namespace: cert-manager
-      path: /validate
-      port: 443
-  failurePolicy: Fail
-  matchPolicy: Equivalent
-  name: webhook.cert-manager.io
-  namespaceSelector:
-    matchExpressions:
-    - key: cert-manager.io/disable-validation
-      operator: NotIn
-      values:
-      - "true"
-  objectSelector: {}
-  rules:
-  - apiGroups:
-    - cert-manager.io
-    - acme.cert-manager.io
-    apiVersions:
-    - v1
-    operations:
-    - CREATE
-    - UPDATE
-    resources:
-    - '*/*'
-    scope: '*'
-  sideEffects: None
-  timeoutSeconds: 30
-
-YAML
-depends_on = [helm_release.traefik]
-}
-
-resource "kubectl_manifest" "TLSOption" {
-  yaml_body = <<YAML
-apiVersion: traefik.io/v1alpha1
-kind: TLSOption
-metadata:
-  name: default
-  namespace: traefik
-spec:
-  minVersion: VersionTLS12
-
-YAML
-depends_on = [helm_release.traefik]
-}
-
-resource "kubectl_manifest" "Middleware" {
-  yaml_body = <<YAML
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: https-redirect
-  namespace: defectdojo
-spec:
-  redirectScheme:
-    scheme: https
-    permanent: true
-
-YAML
-depends_on = [helm_release.traefik]
-}
-
 resource "kubectl_manifest" "IngressRouteSecure" {
   yaml_body = <<YAML
 apiVersion: traefik.io/v1alpha1
@@ -212,6 +133,27 @@ spec:
   tls:
     secretName: defectdojo-tls
 
+YAML
+depends_on = [helm_release.traefik]
+}
+
+resource "kubectl_manifest" "IngressRouteSecure" {
+  yaml_body = <<YAML
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: defectdojo-app-internal
+  namespace: defectdojo
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`defectdojo-django.defectdojo.svc.cluster.local`)
+      kind: Rule
+      services:
+        - name: defectdojo-django
+          namespace: defectdojo
+          port: http
 YAML
 depends_on = [helm_release.traefik]
 }

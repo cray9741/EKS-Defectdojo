@@ -52,8 +52,9 @@ host: defectdojo.cloudlockops.io
 # optional list of alternative hostnames to use that gets appended to
 # DD_ALLOWED_HOSTS. This is necessary when your local hostname does not match
 # the global hostname.
-# alternativeHosts:
-#  - defectdojo.example.com
+alternativeHosts:
+  - defectdojo-django.defectdojo.svc.cluster.local
+
 imagePullPolicy: Always
 # Where to pull the defectDojo images from. Defaults to "defectdojo/*" repositories on hub.docker.com
 repositoryPrefix: tray3rd
@@ -126,14 +127,7 @@ celery:
         cpu: 2000m
         memory: 256Mi
     tolerations: []
-    env:
-      - name: DJANGO_SETTINGS_MODULE
-        value: "dojo.settings.settings"
-      - name: DD_DATABASE_URL
-        valueFrom:
-          secretKeyRef:
-            name: defectdojo-db-secret
-            key: database_url
+
   worker:
     annotations: {}
     affinity: {}
@@ -147,14 +141,7 @@ celery:
         cpu: 2000m
         memory: 512Mi
     tolerations: []
-    env:
-      - name: DJANGO_SETTINGS_MODULE
-        value: "dojo.settings.settings"
-      - name: DD_DATABASE_URL
-        valueFrom:
-          secretKeyRef:
-            name: defectdojo-db-secret
-            key: database_url
+
     app_settings:
       pool_type: solo
       # Performance improved celery worker config when needing to deal with a lot of findings (e.g deduplication ops)
@@ -229,14 +216,7 @@ django:
   nodeSelector: {}
   replicas: 1
   tolerations: []
-  env:
-    - name: DJANGO_SETTINGS_MODULE
-      value: "dojo.settings.settings"
-    - name: DD_DATABASE_URL
-      valueFrom:
-        secretKeyRef:
-          name: defectdojo-db-secret
-          key: database_url
+
   uwsgi:
     livenessProbe:
       enabled: true
@@ -560,7 +540,19 @@ redis:
 # NOTE  This is just an exmaple, do not store sensitive data in plain text form, better inject it during the deployment/upgrade by --set extraSecrets.secret=someSecret
 # extraSecrets:
 #   DD_SOCIAL_AUTH_AUTH0_SECRET: 'xxx'
-extraConfigs: {}
+extraConfigs: 
+  DD_SESSION_COOKIE_SECURE: "false"
+  # Disable automatic HTTPS redirection
+  SECURE_SSL_REDIRECT: "false"
+
+# Disable HSTS to allow HTTP access
+  SECURE_HSTS_SECONDS: "0"
+  SECURE_HSTS_INCLUDE_SUBDOMAINS: "false"
+  SECURE_HSTS_PRELOAD: "false"
+
+# Allow cookies to be sent over HTTP
+  SESSION_COOKIE_SECURE: "false"
+  CSRF_COOKIE_SECURE: "false"
 
 # To add (or override) extra variables which need to be pulled from another configMap, you can
 # use extraEnv. For example:

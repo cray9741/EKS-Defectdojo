@@ -1,19 +1,14 @@
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
-  name: defectdojo-app
+  name: defectdojo-app-internal
   namespace: defectdojo
 spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`defectdojo.cloudlockops.io`)
+    - match: Host(`defectdojo-django.defectdojo.svc.cluster.local`)
       kind: Rule
-      middlewares:
-        - name: https-redirect
-          namespace: defectdojo
-        - name: secure-headers
-          namespace: defectdojo
       services:
         - name: defectdojo-django
           namespace: defectdojo

@@ -1,0 +1,26 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: defectdojo-ingressroute
+  namespace: defectdojo
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`defectdojo.django-defectdojo.svc.cluster.local`)
+      kind: Rule
+      services:
+        - name: defectdojo
+          port: 80
+      middlewares:
+        - name: ip-whitelist-middleware
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: ip-whitelist-middleware
+  namespace: defectdojo
+spec:
+  ipWhiteList:
+    sourceRange:
+      - "100.36.68.167/32"
