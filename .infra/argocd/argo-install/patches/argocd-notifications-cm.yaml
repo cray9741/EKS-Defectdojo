@@ -1,0 +1,307 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  service.webhook.slack_webhook: |
+    url: https://hooks.slack.com/services/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 #TODO
+    headers:
+      - name: Content-Type
+        value: application/json
+  subscriptions: |
+    - recipients:
+      - slack_webhook
+      triggers:
+        - on-sync-succeeded
+        - on-deployed
+        - on-deployment-out-of-date
+        - on-health-degraded
+        - on-sync-failed
+        - on-sync-running
+        - on-sync-status-unknown
+  trigger.on-deployed: |
+    - send:
+      - app-deployed
+      when:  app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+  trigger.on-deployed-out-of-date: |
+    - send:
+      - app-deployment-out-of-date
+      when: app.status.sync.status == 'OutOfSync' and app.status.operationState.phase in ['Succeeded']
+  trigger.on-health-degraded: |
+    - send:
+      - app-health-degraded
+      when: app.status.health.status == 'Degraded'
+  trigger.on-sync-failed: |
+    - send:
+      - app-sync-failed
+      when: app.status.operationState.phase in ['Error', 'Failed']
+  trigger.on-sync-running: |
+    - send:
+      - app-sync-running
+      when: app.status.operationState.phase in ['Running']
+  trigger.on-sync-status-unknown: |
+    - send:
+      - app-sync-status-unknown
+      when: app.status.sync.status == 'Unknown'
+  trigger.on-sync-succeeded: |
+    - send:
+      - app-sync-succeeded
+      when: app.status.operationState.phase in ['Succeeded']
+
+  template.app-sync-succeeded: |
+    webhook:
+      slack_webhook:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "title": "{{ .app.metadata.name}} (Sync Succeeded)",
+              "title_link":"${url}/applications/{{.app.metadata.name}}",
+              "color": "#18be52",
+              "fields": [
+                {
+                  "title": "",
+                  "value": ":white_check_mark: Application {{.app.metadata.name}} has been successfully synced at {{.app.status.operationState.finishedAt}}.",
+                  "short": false
+                },
+                {
+                  "title": "Sync Status",
+                  "value": "{{.app.status.sync.status}}",
+                  "short": true
+                },
+                {
+                  "title": "",
+                  "value": "Sync operation details are available at: ${url}/applications/{{.app.metadata.name}}?operation=true .",
+                  "short": true
+                }
+                {{range $index, $c := .app.status.conditions}}
+                  {{if not $index}},{{end}}
+                  {{if $index}},{{end}}
+                  {
+                    "title": "{{$c.type}}",
+                    "value": "{{$c.message}}",
+                    "short": true
+                  }
+                {{end}}
+              ]
+            }]
+          }
+  template.app-deployment-out-of-date: |
+    webhook:
+      slack_webhook:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "title": "{{ .app.metadata.name}} (App Deployment out of date)",
+              "title_link":"${url}/applications/{{.app.metadata.name}}",
+              "color": "#f4c030",
+              "fields": [
+                {
+                  "title": "Sync Status",
+                  "value": "{{.app.status.sync.status}}",
+                  "short": true
+                },
+                {
+                  "title": "Out Of Date",
+                  "value": ":exclamation: Application {{.app.metadata.name}} is out of sync please review at ${url}/applications/{{.app.metadata.name}}",
+                  "short": true,
+                }
+                {{range $index, $c := .app.status.conditions}}
+                  {{if not $index}},{{end}}
+                  {{if $index}},{{end}}
+                  {
+                    "title": "{{$c.type}}",
+                    "value": "{{$c.message}}",
+                    "short": true
+                  }
+                {{end}}
+              ]
+            }]
+          }
+  template.app-deployed: |
+    webhook:
+      slack_webhook:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "title": "{{ .app.metadata.name}} (App Deployed)",
+              "title_link":"${url}/applications/{{.app.metadata.name}}",
+              "color": "#18be52",
+              "fields": [
+                {
+                  "title": "",
+                  "value": ":white_check_mark: Application {{.app.metadata.name}} is now running new version of deployments manifests.",
+                  "short": false
+                },
+                {
+                  "title": "Sync Status",
+                  "value": "{{.app.status.sync.status}}",
+                  "short": true
+                },
+                {
+                  "title": "Revision",
+                  "value": "{{.app.status.sync.revision}}",
+                  "short": true
+                }
+                {{range $index, $c := .app.status.conditions}}
+                  {{if not $index}},{{end}}
+                  {{if $index}},{{end}}
+                  {
+                    "title": "{{$c.type}}",
+                    "value": "{{$c.message}}",
+                    "short": true
+                  }
+                {{end}}
+              ]
+            }]
+          }
+  template.app-health-degraded: |
+    webhook:
+      slack_webhook:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "title": "{{ .app.metadata.name}} (:skull:App Degraded:skull:)",
+              "title_link": "${url}/applications/{{.app.metadata.name}}",
+              "color": "#f4c030",
+              "fields": [
+                {
+                  "title": "Sync Status",
+                  "value": "{{.app.status.sync.status}}",
+                  "short": true
+                },
+                {
+                  "title": "",
+                  "value": ":exclamation: Application {{.app.metadata.name}} has degraded.\nApplication details: ${url}/applications/{{.app.metadata.name}}.",
+                  "short": true
+                }
+                {{range $index, $c := .app.status.conditions}}
+                  {{if not $index}},{{end}}
+                  {{if $index}},{{end}}
+                  {
+                    "title": "{{$c.type}}",
+                    "value": "{{$c.message}}",
+                    "short": true
+                  }
+                {{end}}
+              ]
+            }]
+          }
+  template.app-sync-failed: |
+    webhook:
+      slack_webhook:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "title": "{{ .app.metadata.name}} (:skull:Sync Failed:skull:)",
+              "title_link":"${url}/applications/{{.app.metadata.name}}",
+              "color": "#E96D76",
+              "fields": [
+                {
+                  "title": "",
+                  "value": ":exclamation: The sync operation of application {{.app.metadata.name}} has failed at {{.app.status.operationState.finishedAt}} with the following error: {{.app.status.operationState.message}}",
+                  "short": false
+                },
+                {
+                  "title": "Sync Status",
+                  "value": "{{.app.status.sync.status}}",
+                  "short": true
+                },
+                {
+                  "title": "",
+                  "value": "Sync operation details are available at: ${url}/applications/{{.app.metadata.name}}?operation=true .",
+                  "short": true
+                }
+                {{range $index, $c := .app.status.conditions}}
+                  {{if not $index}},{{end}}
+                  {{if $index}},{{end}}
+                  {
+                    "title": "{{$c.type}}",
+                    "value": "{{$c.message}}",
+                    "short": true
+                  }
+                {{end}}
+              ]
+            }]
+          }
+  template.app-sync-running: |
+    webhook:
+      slack_webhook:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "title": "{{ .app.metadata.name}} (Sync Running)",
+              "title_link":"${url}/applications/{{.app.metadata.name}}",
+              "color": "#0DADEA",
+              "fields": [
+                {
+                  "title": "",
+                  "value": "The sync operation of application {{.app.metadata.name}} has started at {{.app.status.operationState.startedAt}}.",
+                  "short": false
+                },
+                {
+                  "title": "Sync Status",
+                  "value": "{{.app.status.sync.status}}",
+                  "short": true
+                },
+                {
+                  "title": "",
+                  "value": "Sync operation details are available at: ${url}/applications/{{.app.metadata.name}}?operation=true .",
+                  "short": true
+                }
+                {{range $index, $c := .app.status.conditions}}
+                  {{if not $index}},{{end}}
+                  {{if $index}},{{end}}
+                  {
+                    "title": "{{$c.type}}",
+                    "value": "{{$c.message}}",
+                    "short": true
+                  }
+                {{end}}
+              ]
+            }]
+          }
+  template.app-sync-status-unknown: |
+    webhook:
+      slack_webhook:
+        method: POST
+        body: |
+          {
+            "attachments": [{
+              "title": "{{ .app.metadata.name}} (Sync Unknown)",
+              "title_link":"${url}/applications/{{.app.metadata.name}}",
+              "color": "#E96D76",
+              "fields": [
+                {
+                  "title": "",
+                  "value": ":exclamation: Application {{.app.metadata.name}} sync is 'Unknown'.",
+                  "short": false
+                },
+                {
+                  "title": "Sync Status",
+                  "value": "{{.app.status.sync.status}}",
+                  "short": true
+                },
+                {
+                  "title": "",
+                  "value": "Application details: ${url}/applications/{{.app.metadata.name}}.\n{{range $c := .app.status.conditions}}* {{$c.message}}\n{{end}}",
+                  "short": true
+                }
+                {{range $index, $c := .app.status.conditions}}
+                  {{if not $index}},{{end}}
+                  {{if $index}},{{end}}
+                  {
+                    "title": "{{$c.type}}",
+                    "value": "{{$c.message}}",
+                    "short": true
+                  }
+                {{end}}
+              ]
+            }]
+          }

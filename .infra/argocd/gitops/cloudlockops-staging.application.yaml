@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudlockops-staging
+  annotations:
+    notifications.argoproj.io/subscribe.on-sync-succeeded.slack_webhook: ""
+    notifications.argoproj.io/subscribe.on-sync-failed.slack_webhook: ""
+    notifications.argoproj.io/subscribe.on-sync-running.slack_webhook: ""
+    notifications.argoproj.io/subscribe.on-sync-status-unknown.slack_webhook: ""
+    notifications.argoproj.io/subscribe.on-health-degraded.slack_webhook: ""
+    notifications.argoproj.io/subscribe.on-deployed.slack_webhook: ""
+spec:
+  destination:
+    name: in-house
+    namespace: default
+  project: cloudlockops
+  source:
+    path: kubernetes/cloudlockops
+    repoURL: https://github.com/cloudlockops/cloudlockops.git 
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - staging-values.yaml
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+
+

@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: self-argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-house
+    namespace: argocd
+   
+  project: cloudlockops
+  source:
+    path: .infra/argocd/argo-install
+    repoURL: https://github.com/cloudlockops/cloudlockops-web.git 
+    targetRevision: main
+
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true

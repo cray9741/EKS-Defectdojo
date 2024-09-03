@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: traefik-certificate
+  namespace: traefik-system
+spec:
+  dnsNames:
+    - traefik.cloudlockops.io
+  secretName: traefik.cloudlockops.io
+  issuerRef:
+    name: selfsigned
+    kind: ClusterIssuer

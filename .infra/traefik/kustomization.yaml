@@ -1,0 +1,13 @@
+# Reflector setup
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: traefik-system
+
+resources:
+- traefik-auth.middleware.basicauth.yaml
+- traefik-auth.secret.secretauth.yaml
+- traefik-dashboard.ingressroute.yaml
+- traefik-certificate.certificate.yaml
+
+

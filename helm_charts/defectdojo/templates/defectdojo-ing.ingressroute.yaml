@@ -1,0 +1,16 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: defectdojo-ing
+spec:
+  entryPoints: # We listen to requests coming from ports 80 and 443
+    - web
+    - websecure
+  routes:
+    - match: Host(`defectdojo.cloudlockops.io`)
+      kind: Rule
+      services:
+        - name: defectdojo-django # Requests will be forwarded to this service
+          port: 80
+  tls:
+    secretName: defectdojo.cloudlockops.io
