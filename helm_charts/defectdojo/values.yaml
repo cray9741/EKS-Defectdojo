@@ -246,6 +246,19 @@ django:
       certMountPath: /certs/
       certFileName: ca.crt
 
+  # Adding AWS credentials to environment variables
+  extraEnv:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: aws-credentials
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: aws-credentials
+          key: AWS_SECRET_ACCESS_KEY
+
   # A list of extra volumes to mount. This
   # is useful for bringing in extra data that can be referenced by other configurations
   # at a well known path, such as local_settings. The
