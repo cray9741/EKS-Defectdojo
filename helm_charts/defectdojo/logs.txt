@@ -1,0 +1,6 @@
+INFO:__main__:Starting the Checkov script...
+INFO:botocore.credentials:Found credentials in environment variables.
+INFO:__main__:Fetched parameter DOJO_API_KEY
+INFO:__main__:Fetched parameter DOJO_IMPORT_URL
+INFO:__main__:Listed 0 files from bucket tools-bucket-cloudranger-30293812 with prefix checkov
+INFO:__main__:Checkov script completed.

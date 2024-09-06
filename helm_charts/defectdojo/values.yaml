@@ -44,7 +44,7 @@ networkPolicy:
 # Set the "enable" field to true of the database type you select (if you want to use internal database) and false of the one you don't select
 database: postgresql
 # Primary hostname of instance
-host: localhost #defectdojo.cloudlockops.io
+host: defectdojo.cloudlockops.io
 
 # The full URL to your defectdojo instance, depends on the domain where DD is deployed, it also affects links in Jira
 # site_url: 'https://<yourdomain>'
@@ -52,8 +52,8 @@ host: localhost #defectdojo.cloudlockops.io
 # optional list of alternative hostnames to use that gets appended to
 # DD_ALLOWED_HOSTS. This is necessary when your local hostname does not match
 # the global hostname.
-# alternativeHosts:
-#   - defectdojo-django.defectdojo.svc.cluster.local
+alternativeHosts:
+  - defectdojo-django.defectdojo.svc.cluster.local
 
 imagePullPolicy: Always
 # Where to pull the defectDojo images from. Defaults to "defectdojo/*" repositories on hub.docker.com
@@ -245,19 +245,6 @@ django:
       configName: defectdojo-ca-certs
       certMountPath: /certs/
       certFileName: ca.crt
-
-  # Adding AWS credentials to environment variables
-  extraEnv:
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: aws-credentials
-          key: AWS_ACCESS_KEY_ID
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: aws-credentials
-          key: AWS_SECRET_ACCESS_KEY
 
   # A list of extra volumes to mount. This
   # is useful for bringing in extra data that can be referenced by other configurations

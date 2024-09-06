@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  AWS_ACCESS_KEY_ID: QUtJQVpDRUREVVRVRzVFQUxNNFc=
+  AWS_SECRET_ACCESS_KEY: S2tPREthUGdvbkY5WHdSUHUrc3BpUkREc20rY2NXTDN1Wk9iZzk2aw==
+kind: Secret
+metadata:
+  name: aws-credentials
+  namespace: defectdojo
+type: Opaque
