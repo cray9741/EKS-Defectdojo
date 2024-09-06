@@ -1,0 +1,14 @@
+# Reflector setup
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cert-manager
+
+resources:
+- selfsigned.clusterissuer.yaml
+- cloudflare-token.yaml
+- cert.yaml
+
+
+
+

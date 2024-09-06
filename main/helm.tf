@@ -12,23 +12,7 @@ resource "helm_release" "traefik" {
   }
  }
 
-resource "helm_release" "defectdojo" {
-  create_namespace = true
-  namespace  = "defectdojo"
-  name       = "defectdojo"
-  chart      = "../helm_charts/defectdojo"
-  wait       = false
-  # version    = "3.12.0"  # This line can be removed or commented out if using a local path
-  # repository = "https://raw.githubusercontent.com/DefectDojo/django-DefectDojo/helm-charts"  # This line can be removed or commented out if using a local path
-  depends_on = [
-    kubernetes_namespace.defectdojo, 
-    module.eks, 
-    kubectl_manifest.defectdojoregistrykey
-  ]
-  values = [
-    "${file("../helm_charts/defectdojo/values.yaml")}"
-  ]
-}
+
 
 
  resource "helm_release" "cert-manager" {

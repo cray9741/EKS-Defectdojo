@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: defectdojoregistrykey
+  namespace: defectdojo
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJ0cmF5M3JkIiwicGFzc3dvcmQiOiJ+MTQxTzkwbGQ5NzQxTm9ydGhlcm4iLCJlbWFpbCI6ImNyYXk5NzQxQG91dGxvb2suY29tIiwiYXV0aCI6ImRISmhlVE55WkRwK01UUXhUemt3YkdRNU56UXhUbTl5ZEdobGNtND0ifX19

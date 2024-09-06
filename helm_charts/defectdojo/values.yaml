@@ -110,6 +110,7 @@ monitoring:
 
 annotations: {}
 
+
 # Components
 celery:
   broker: rabbitmq
@@ -482,8 +483,8 @@ rabbitmq:
   enabled: true
   replicaCount: 1
   auth:
-    password: ""
-    erlangCookie: ""
+    password: "d1ZSODh0bXJCNA=="
+    erlangCookie: RXRDYW52UGRScFgzZHBndDMxamZWeHdSTkJ2VXJUNFU="
     existingPasswordSecret: defectdojo-rabbitmq-specific
     secretPasswordKey: ""
     existingErlangSecret: defectdojo-rabbitmq-specific

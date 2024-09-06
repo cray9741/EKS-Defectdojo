@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: defectdojo.cloudlockops.io
+spec:
+  dnsNames:
+    - defectdojo.cloudlockops.io
+  secretName: defectdojo.cloudlockops.io
+  issuerRef:
+    name: selfsigned # Use the issuer created previously
+    kind: ClusterIssuer
