@@ -8,9 +8,9 @@ resources:
 - resources/argocd.namespace.yaml
 - resources/argo-managed-cert.yaml
 - resources/cloudlockops.appproject.yaml
-- resources/argo-ingress.yaml
-- resources/argo-backendconfig.yaml
-- resources/argo-frontendconfig.yaml
+- resources/argocd-ing-route.ingressroute.yaml
+# - resources/argocd-ing.ingress.yaml
+- resources/secure-headers.middleware.yaml
 
 patches:
 # - path: patches/git-secrets.secret.yaml

@@ -3,12 +3,11 @@ kind: Service
 metadata:
   name: argocd-server
 spec:
-  type: ClusterIP
+  type: LoadBalancer 
   ports:
   - name: http
     port: 80
     protocol: TCP
     targetPort: 8080
-  selector:
-    app.kubernetes.io/name: argocd-server
+
 

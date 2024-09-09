@@ -1,7 +1,7 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: argocd-ing
+  name: argocd-ing-route
 spec:
   entryPoints: # We listen to requests coming from ports 80 and 443
     - web
@@ -9,8 +9,10 @@ spec:
   routes:
     - match: Host(`argocd.cloudlockops.io`)
       kind: Rule
+      middlewares:
+        - name: secure-headers
       services:
         - name: argocd-server # Requests will be forwarded to this service
           port: 80
   tls:
-    secretName: argocd.cloudlockops.io
+    secretName: argocd-secret-tls
