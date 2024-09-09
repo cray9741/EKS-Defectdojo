@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-ing
+  annotations:
+    cert-manager.io/cluster-issuer: cloudflare-issuer
+spec:
+  # ingressClassName: traefik
+  rules:
+  - host: argocd.cloudlockops.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: argocd-server
+            port:
+              name: http
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - argocd.cloudlockops.io
+    secretName: argocd-cert-tls
+

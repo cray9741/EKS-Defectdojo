@@ -110,6 +110,7 @@ monitoring:
 
 annotations: {}
 
+
 # Components
 celery:
   broker: rabbitmq
@@ -193,10 +194,10 @@ django:
   ingress:
     enabled: true
     ingressClassName: "traefik"
-    activateTLS: true
-    secretName: defectdojo-tls
-    annotations:
-      cert-manager.io/cluster-issuer: cloudflare-issuer
+    # activateTLS: true
+    # secretName: defectdojo-tls
+    # annotations:
+    #   cert-manager.io/cluster-issuer: cloudflare-issuer
       # Restricts the type of ingress controller that can interact with our chart (nginx, traefik, ...)
       # kubernetes.io/ingress.class: nginx
       # Depending on the size and complexity of your scans, you might want to increase the default ingress timeouts if you see repeated 504 Gateway Timeouts
@@ -482,8 +483,8 @@ rabbitmq:
   enabled: true
   replicaCount: 1
   auth:
-    password: ""
-    erlangCookie: ""
+    password: "d1ZSODh0bXJCNA=="
+    erlangCookie: RXRDYW52UGRScFgzZHBndDMxamZWeHdSTkJ2VXJUNFU="
     existingPasswordSecret: defectdojo-rabbitmq-specific
     secretPasswordKey: ""
     existingErlangSecret: defectdojo-rabbitmq-specific

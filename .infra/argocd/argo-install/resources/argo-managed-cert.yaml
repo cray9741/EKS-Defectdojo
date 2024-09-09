@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: argocd-cert-tls
+spec:
+  dnsNames:
+    - argocd.cloudlockops.io
+  secretName: argocd-secret-tls
+  issuerRef:
+    name:  cloudflare-issuer
+    kind: ClusterIssuer
